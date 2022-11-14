@@ -6,6 +6,14 @@ from flask_restful import Resource
 from src.const import MESSAGE
 from src.controller.auth import login_required
 
+# from controller.auth1 import login_required
+
+
+class MainPage(Resource):
+    # TODO: return recommendation (and recent interacted books, via rating/subscription...)
+    def get(self):
+        return {MESSAGE: "You're at our main page"}
+
 
 class Search(Resource):
     def get(self):
@@ -20,7 +28,7 @@ class Recommendation(Resource):
         book_list = []
         return book_list
 
-    @login_required()
+    # @login_required()
     def post(self):
         # Send user's activity to update recommendatión
         return {MESSAGE: "suceeded"}

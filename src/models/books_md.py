@@ -4,7 +4,7 @@ from flask import redirect, request, session
 from flask_restful import Resource
 
 from src.const import MESSAGE
-from src.controller.auth import login_required
+# from controller.auth1 import login_required
 
 
 class Search(Resource):
@@ -20,7 +20,7 @@ class Recommendation(Resource):
         book_list = []
         return book_list
 
-    @login_required()
+    # @login_required()
     def post(self):
         # Send user's activity to update recommendatión
         return {MESSAGE: "suceeded"}

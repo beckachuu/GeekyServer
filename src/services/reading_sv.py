@@ -1,10 +1,10 @@
 import sqlalchemy as sql
 
-from init_app import f_sql
-from src.controller.auth import login_required
+from init_app import db
+from controller.auth1 import login_required
 
 
-@login_required()
+# @login_required()
 class ReadingService:
 
     def get_book_content():

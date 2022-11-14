@@ -1,14 +1,15 @@
 import sqlalchemy as sql
 
-from init_app import f_sql
+from init_app import db
 
 
-class Users(f_sql.Model):
+class Users(db.Model):
     username = sql.Column(sql.String, primary_key=True)
     email = sql.Column(sql.String)
     name = sql.Column(sql.String)
     phone = sql.Column(sql.String)
     profile_pic = sql.Column(sql.String)
+    theme_preference = sql.Column(sql.Integer)
     login_state = sql.Column(sql.String)
     user_role = sql.Column(sql.Integer)
 
@@ -21,4 +22,4 @@ class Users(f_sql.Model):
         self.user_role = user_role
 
     def get_user():
-        users = f_sql.session.execute(f_sql.select(Users).scalar())
+        users = db.session.execute(db.select(Users).scalar())

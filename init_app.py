@@ -11,5 +11,5 @@ app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 Session(app)
 CORS(app)
 
-f_sql = SQLAlchemy()
-f_sql.init_app(app)
+db = SQLAlchemy()
+db.init_app(app)

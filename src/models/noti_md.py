@@ -1,6 +1,6 @@
 import sqlalchemy as sql
 
-from init_app import f_sql
+from init_app import db
 
 
 class Notifications(sql.Model):

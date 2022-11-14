@@ -1,89 +1,104 @@
 import sqlalchemy as sql
 from flask import redirect, request, session
 
-from init_app import f_sql
-from lib.config import flow
+from init_app import db
+from src.models.users_md import Users
 from src.const import STATE
-from src.controller.auth import login_required, not_logged_in_required, reauthentication_required, admin_only
+from src.controller.auth import login_required,  reauthentication_required, admin_only
+from src.const import EMAIL
 
 
-class GuestService:
-    def register_user():
-        pass
-
-    @not_logged_in_required()
-    def login():
-        print("Login session ID: ", session.sid)
-
-        authorization_url, state = flow.authorization_url()
-        response = redirect(authorization_url)
-        print("old session state: ", session.get(STATE))
-
-        session[STATE] = state
-        session.modified = True
-        response.set_cookie(STATE, state)
-
-        print("new session state: ", session.get(STATE))
-        return response
+def register_user():
+    pass
 
 
-@login_required
-class UsersService:
-    def logout():
-        session.clear()
-        return redirect("/")
-
-    def remove_own_account():
-        pass
-
-    def subscribe_to_author():
-        pass
-
-    def edit_info():
-        pass
-
-    def create_collection():
-        pass
-
-    def get_collections():
-        pass
-
-    def get_collection_by_name():
-        pass
-
-    def edit_collection_name(name=None):
-        pass
-
-    def remove_book_from_collections(book_id):
-        pass
-
-    def get_my_rates():
-        pass
-
-    def get_all_notis():
-        pass
-
-    def remove_noti(noti_id):
-        pass
+@login_required()
+def get_own_account():
+    user = Users.query.filter_by(email=request.cookies.get(EMAIL)).first()
+    return user.username
 
 
-@admin_only
-class AdminService:
-    def get_user_info(username):
-        pass
+# @login_required()
+def edit_own_account():
+    pass
 
-    @reauthentication_required
-    def remove_user(username):
-        pass
 
-    def add_book():
-        pass
+# @login_required()
+def remove_own_account():
+    pass
 
-    def edit_book_info():
-        pass
 
-    def remove_book():
-        pass
+# @login_required()
+def subscribe_to_author():
+    pass
 
-    def remove_rating():
-        pass
+
+# @login_required()
+def create_collection():
+    pass
+
+
+# @login_required()
+def get_collections():
+    pass
+
+
+# @login_required()
+def get_collection_by_name():
+    pass
+
+
+# @login_required()
+def edit_collection_name(name=None):
+    pass
+
+
+# @login_required()
+def remove_book_from_collections(book_id):
+    pass
+
+
+# @login_required()
+def get_my_rates():
+    pass
+
+
+# @login_required()
+def get_all_notis():
+    pass
+
+
+# @login_required()
+def remove_noti(noti_id):
+    pass
+
+
+# @admin_only()
+def get_user_info(username):
+    pass
+
+
+# @reauthentication_required()
+# @admin_only()
+def remove_user(username):
+    pass
+
+
+# @admin_only()
+def add_book():
+    pass
+
+
+# @admin_only()
+def edit_book_info():
+    pass
+
+
+# @admin_only()
+def remove_book():
+    pass
+
+
+# @admin_only()
+def remove_rating():
+    pass

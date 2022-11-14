@@ -1,7 +1,7 @@
 import sqlalchemy as sql
 
-from init_app import f_sql
-from src.controller.auth import admin_only
+from init_app import db
+# from controller.auth1 import admin_only
 
 
 class BooksService:
@@ -18,7 +18,6 @@ class BooksService:
     def get_detail_info():
         pass
 
-    # fp-treeee
     # general: by ratings + reports (of the books)
     # personal: by rating + report activities
     def recommendation():
