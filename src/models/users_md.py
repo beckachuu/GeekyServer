@@ -1,25 +1,40 @@
-import sqlalchemy as sql
-
 from init_app import db
+from src.models.collections_md import Collections
+from src.utils import get_username_from_email
 
 
 class Users(db.Model):
-    username = sql.Column(sql.String, primary_key=True)
-    email = sql.Column(sql.String)
-    name = sql.Column(sql.String)
-    phone = sql.Column(sql.String)
-    profile_pic = sql.Column(sql.String)
-    theme_preference = sql.Column(sql.Integer)
-    login_state = sql.Column(sql.String)
-    user_role = sql.Column(sql.Integer)
+    username = db.Column(db.String(20), primary_key=True)
+    email = db.Column(db.String)
+    name = db.Column(db.String)
+    phone = db.Column(db.String)
+    profile_pic = db.Column(db.String)
+    theme_preference = db.Column(db.Integer)
+    login_state = db.Column(db.String)
+    user_role = db.Column(db.Integer)
 
-    def __init__(self, username, email, name=None, phone=None, profile_pic=None, login_state=None, user_role=0):
-        self.username = username
+    def __init__(self, email, name=None, phone=None, profile_pic=None, theme_preference=1, user_role=0):
+        self.username = get_username_from_email(email)
         self.email = email
         self.name = name
         self.phone = phone
         self.profile_pic = profile_pic
+        self.theme_preference = theme_preference
         self.user_role = user_role
 
-    def get_user():
-        users = db.session.execute(db.select(Users).scalar())
+    def get_json(self):
+        collections_query = Collections.query.filter_by(username=self.username)
+        collection_list = []
+        for collection in collections_query:
+            collection_list.append(collection.to_json())
+
+        return {
+            'username': self.username,
+            'email': self.email,
+            'name': self.name,
+            'phone': self.phone,
+            'profile_pic': self.profile_pic,
+            'theme_preference': self.theme_preference,
+            'collections': {"collection_list": collection_list,
+                            "collection_count": len(collection_list)},
+        }

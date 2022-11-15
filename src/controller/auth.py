@@ -1,16 +1,9 @@
-import os
-import time
 from functools import wraps
 
-import google.auth.transport.requests
-import requests
-from flask import redirect, request, session
-from flask_restful import Resource
-from google.oauth2 import id_token
-from pip._vendor import cachecontrol
-
-from lib.config import GOOGLE_CLIENT_ID, flow
-from src.const import EMAIL, NAME, STATE
+from flask import redirect, request
+from src.models.states_md import States
+from init_app import db
+from src.const import *
 from src.models.users_md import Users
 
 
@@ -21,11 +14,13 @@ def login_required():
             cookies_state = request.cookies.get(STATE)
             # print("STATE IN LOGIN-REQUIRED(): ", request.cookies.get(STATE))  # gud
 
-            if not request.cookies.get(EMAIL) or not cookies_state:
+            if not cookies_state:
+                print("YOU DONT HAVE ANY COOKIE STATE")
                 return redirect("/login")
             else:
                 user = Users.query.filter_by(login_state=cookies_state).first()
                 if not user:
+                    print("NO USER WITH THIS COOKIE STATE: ", cookies_state)
                     return redirect("/login")
 
             return function(*args, **kwargs)
@@ -34,26 +29,54 @@ def login_required():
 
 
 def admin_only():
-    # TODO:
     def wrapper(function):
         @wraps(function)
         def real_func(*args, **kwargs):
-            # if "google_id" not in session:
-            #     return redirect("/login")
-            # else:
+            cookies_state = request.cookies.get(STATE)
+
+            if not cookies_state:
+                return redirect("/login")
+            else:
+                user = Users.query.filter_by(login_state=cookies_state).first()
+                if not user:
+                    return redirect("/login")
+                if user.user_role is not ADMIN:
+                    return {MESSAGE: "You shall not pass! ('cause you're not authorized)"}, UNAUTHORIZED
+
             return function(*args, **kwargs)
         return real_func
     return wrapper
 
 
-def reauthentication_required():
-    # TODO:
-    def wrapper(function):
-        @wraps(function)
-        def real_func(*args, **kwargs):
-            # if "google_id" not in session:
-            #     return redirect("/login")
-            # else:
-            return function(*args, **kwargs)
-        return real_func
-    return wrapper
+# def reauthentication_required():
+#     def wrapper(function):
+#         @wraps(function)
+#         def real_func(*args, **kwargs):
+#             cookies_state = request.cookies.get(STATE)
+
+#             if not cookies_state:
+#                 return redirect("/login")
+#             else:
+#                 user = Users.query.filter_by(login_state=cookies_state).first()
+#                 if not user:
+#                     return redirect("/login")
+#                 if user.user_role is not ADMIN:
+#                     return {MESSAGE: "You shall not pass! ('cause you're not authorized)"}, UNAUTHORIZED
+
+#             return function(*args, **kwargs)
+#         return real_func
+#     return wrapper
+
+
+def remove_current_state():
+    cookies_state = request.cookies.get(STATE)
+    state_db = States.query.filter_by(state=cookies_state).first()
+    db.session.delete(state_db)
+    db.session.commit()
+
+
+def get_current_user():
+    cookies_state = request.cookies.get(STATE)
+
+    user = Users.query.filter_by(login_state=cookies_state).first()
+    return user

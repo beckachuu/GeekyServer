@@ -10,9 +10,8 @@ from pip._vendor import cachecontrol
 
 from init_app import db
 from lib.config import GOOGLE_CLIENT_ID, flow
-from src.const import EMAIL, MESSAGE, NAME, STATE
-from src.controller.auth import (admin_only, login_required,
-                                 reauthentication_required)
+from src.const import *
+from src.controller.auth import get_current_user, admin_only, login_required, remove_current_state
 from src.models.states_md import States
 from src.models.users_md import Users
 from src.services.users_sv import *
@@ -33,7 +32,7 @@ class Login(Resource):
 
 
 class Callback(Resource):
-    @cross_origin(supports_credentials=True)
+    # @cross_origin(supports_credentials=True)
     def get(self):
         # print("STATE AT BEGINNING OF CALLBACK(): ", request.cookies.get(STATE)) # wrong
 
@@ -43,7 +42,9 @@ class Callback(Resource):
         db_state = States.query.filter_by(
             state=request.args[STATE]).first().state
         if not db_state == request.args[STATE]:
-            return {"message": "States don't match"}, 500
+            if db_state:
+                remove_current_state()
+            return {"message": "States don't match. You may delete your cookies and retry."}, 500
 
         credentials = flow.credentials
         request_session = requests.session()
@@ -58,35 +59,54 @@ class Callback(Resource):
             audience=GOOGLE_CLIENT_ID
         )
 
-        user = Users.query.filter_by(email=id_info.get(EMAIL)).first()
+        current_email = id_info.get(EMAIL)
+
+        user = Users.query.filter_by(email=current_email).first()
+        if user is None:
+            user = Users(email=current_email)
+            user.profile_pic = id_info.get(PICTURE)
+            db.session.add(user)
+
         user.login_state = db_state
-
-        print("adding user login state: ", user.login_state)
-
         db.session.commit()
 
         response.set_cookie(STATE, db_state)
-        response.set_cookie(EMAIL, user.email)
         return response
 
 
 class Logout(Resource):
     def get(self):
-        cookies_state = request.cookies.get(STATE)
-        print("Before log out state: ", cookies_state)
-
-        state_db = States.query.filter_by(state=cookies_state).first()
-        db.session.delete(state_db)
-
-        db.session.commit()
-        return redirect("/")
+        remove_current_state()
+        response = redirect("/")
+        response.delete_cookie(STATE)
+        return response
 
 
-class ManageAccount(Resource):
+class ManageMyAccount(Resource):
     @login_required()
     def get(self):
         account = get_own_account()
         if account is not None:
-            return get_own_account(), 200
+            return account.get_json(), OK_STATUS
         else:
-            return {MESSAGE: "Account not found"}, 404
+            return {MESSAGE: "Account not found"}, NOT_FOUND
+
+    @login_required()
+    def post(self):
+        request_args = request.args
+
+        username = request_args.get(USERNAME)
+        name = request_args.get(NAME)
+        phone = request_args.get(PHONE)
+        profile_pic = request_args.get(PROFILE_PIC)
+        theme_preference = request_args.get(THEME)
+
+        code = edit_own_account(username, name, phone,
+                                profile_pic, theme_preference)
+
+        if code == OK_STATUS:
+            return {MESSAGE: "Your profile is updated"}, OK_STATUS
+        elif code == NO_CONTENT:
+            return {MESSAGE: "Your profile is the same"}, OK_STATUS
+        else:
+            return {MESSAGE: "Account not found"}, NOT_FOUND
