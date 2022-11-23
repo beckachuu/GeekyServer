@@ -9,7 +9,7 @@ from google.oauth2 import id_token
 from pip._vendor import cachecontrol
 
 from init_app import db
-from lib.config import GOOGLE_CLIENT_ID, flow
+from config.config import GOOGLE_CLIENT_ID, flow
 from src.const import *
 from src.controller.auth import get_current_user, admin_only, login_required, remove_current_state
 from src.models.states_md import States

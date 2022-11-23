@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from google_auth_oauthlib.flow import Flow
 
-client_secrets_file = os.path.join("lib/client_secret.json")
+client_secrets_file = os.path.join("config/client_secret.json")
 
 flow = Flow.from_client_secrets_file(  # Flow is OAuth 2.0 a class that stores all the information on how we want to authorize our users
     client_secrets_file=client_secrets_file,
