@@ -1,6 +1,8 @@
 from init_app import db
 from src.models.authors_books_md import Books_Authors
+from src.models.genres_md import Genres
 from src.models.ratings_md import Ratings
+from src.utils import *
 
 
 class Books(db.Model):
@@ -8,7 +10,6 @@ class Books(db.Model):
     title = db.Column(db.String(70))
     translator = db.Column(db.String(70))
     cover = db.Column(db.String)
-    genre = db.Column(db.String(40))
     page_count = db.Column(db.Integer)
     public_year = db.Column(db.Integer)
     content = db.Column(db.String)
@@ -16,43 +17,91 @@ class Books(db.Model):
     republish_count = db.Column(db.Integer)
     current_rating = db.Column(db.Float)
 
-    authors = []
-
-    def __init__(self, title, genre, page_count, public_year, content, descript, translator=None, cover=None, republish_count=None, current_rating=None):
+    def __init__(self, title, page_count, public_year, content, descript, translator=None, cover=None, republish_count=None):
         self.title = title
         self.translator = translator
         self.cover = cover
-        self.genre = genre
         self.page_count = page_count
         self.public_year = public_year
         self.content = content
         self.descript = descript
         self.republish_count = republish_count
-        self.current_rating = current_rating
-
-        authors_query = Books_Authors.query.filter_by(book_id=self.book_id)
-        authors = {}
-        for author in authors_query:
-            authors[author.author_id] = author.author_name
+        self.current_rating = None
 
     def get_summary_json(self):
+        genre_query = Genres.query.filter_by(book_id=self.book_id)
+        genres = []
+        for book_genre in genre_query:
+            genres.append(book_genre.genre)
+
+        authors_query = Books_Authors.query.filter_by(book_id=self.book_id)
+        authors = []
+        for author in authors_query:
+            authors.append({author.author_id: author.author_name})
+
         return {
             'book_id': self.book_id,
             'title': self.title,
-            'authors': self.authors,
+            'authors': authors,
             'current_rating': self.current_rating,
-            'genre': self.genre,
+            'genre': genres,
         }
 
     def get_detail_json(self):
+        genre_query = Genres.query.filter_by(book_id=self.book_id)
+        genres = []
+        for book_genre in genre_query:
+            genres.append(book_genre.genre)
+
+        authors_query = Books_Authors.query.filter_by(book_id=self.book_id)
+        authors = []
+        for author in authors_query:
+            authors.append({author.author_id: author.author_name})
+
         return {
             'book_id': self.book_id,
             'title': self.title,
-            'authors': self.authors,
-            'genre': self.genre,
+            'authors': authors,
+            'genre': genres,
             'translator': self.translator,
             'page_count': self.page_count,
             'public_year': self.public_year,
             'republish_count': self.republish_count,
             'descript': self.descript,
         }
+
+    def update_title(self, new_title):
+        if self.title != new_title and is_valid_name(new_title):
+            self.title = new_title
+            return True
+        return False
+
+    def update_translator(self, new_translator):
+        if self.translator != new_translator and is_valid_name(new_translator):
+            self.translator = new_translator
+            return True
+        return False
+
+    def update_cover(self, new_cover):
+        if self.cover != new_cover and is_url_image(new_cover):
+            self.cover = new_cover
+            return True
+        return False
+
+    def update_page_count(self, new_page_count):
+        if self.page_count != new_page_count and new_page_count.isnumeric():
+            self.page_count = new_page_count
+            return True
+        return False
+
+    def update_public_year(self, new_public_year):
+        if self.public_year != new_public_year and new_public_year.isnumeric():
+            self.public_year = new_public_year
+            return True
+        return False
+
+    def update_republish_count(self, new_republish_count):
+        if self.republish_count != new_republish_count and new_republish_count.isnumeric():
+            self.republish_count = new_republish_count
+            return True
+        return False

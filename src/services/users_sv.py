@@ -21,6 +21,8 @@ def edit_own_account(username=None, name=None, phone=None, profile_pic=None, the
     account = get_own_account()
     updated = False
 
+    # TODO: handle MySQLdb.DataError: (1406, "Data too long for column...)
+
     if account is None:
         return None, NOT_FOUND
 
@@ -88,12 +90,12 @@ def get_my_rates():
 
 
 @login_required()
-def get_all_notis():
+def get_my_noti():
     pass
 
 
 @login_required()
-def remove_noti(noti_id):
+def change_noti_pref(noti_pref):
     pass
 
 

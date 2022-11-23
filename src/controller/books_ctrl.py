@@ -23,6 +23,12 @@ class Search(Resource):
         return {MESSAGE: "search successful"}, 200
 
 
+class Book(Resource):
+    def get(self, book_id):
+        result = request.get_json()
+        return {MESSAGE: result['book']}
+
+
 class Recommendation(Resource):
     def get(self):
         book_list = []

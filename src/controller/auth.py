@@ -15,12 +15,12 @@ def login_required():
             # print("STATE IN LOGIN-REQUIRED(): ", request.cookies.get(STATE))  # gud
 
             if not cookies_state:
-                print("YOU DONT HAVE ANY COOKIE STATE")
+                # print("YOU DONT HAVE ANY COOKIE STATE")
                 return redirect("/login")
             else:
                 user = Users.query.filter_by(login_state=cookies_state).first()
                 if not user:
-                    print("NO USER WITH THIS COOKIE STATE: ", cookies_state)
+                    # print("NO USER WITH THIS COOKIE STATE: ", cookies_state)
                     return redirect("/login")
 
             return function(*args, **kwargs)

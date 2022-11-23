@@ -17,3 +17,9 @@ class AuthorsQuotes(db.Model):
             'author_id': self.author_id,
             'quote': self.quote,
         }
+
+    def update_quote(self, new_quote):
+        if self.quote != new_quote:
+            self.quote = new_quote
+            return True
+        return False

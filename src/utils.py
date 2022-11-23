@@ -1,7 +1,59 @@
-from functools import lru_cache
 import random
+import re
 import string
 import time
+from functools import lru_cache
+from src.const import *
+import requests
+
+regex_name = '^[A-Za-z_][A-Za-z0-9_]*'
+regex_username = '^[A-Za-z][A-Za-z0-9]*'
+
+
+def is_valid_name(str, max_length=NAME_MAX_LENGTH, min_length=0):
+    if str is None:
+        return False
+
+    if len(str) > max_length or len(str) < min_length:
+        return False
+
+    if re.search(regex_name, str):
+        return True
+    else:
+        return False
+
+
+def is_valid_username(str, max_length=20, min_length=0):
+    if str is None:
+        return False
+
+    if len(str) > max_length or len(str) < min_length:
+        return False
+
+    if re.search(regex_name, str):
+        return True
+    else:
+        return False
+
+
+def validate_phone(phone):
+    if phone is None:
+        return None
+
+    result = re.sub('\D', '', phone)
+
+    if len(str) == PHONE_LENGTH:
+        return result
+
+    return None
+
+
+def is_url_image(image_url):
+
+    r = requests.head(image_url)
+    if r.headers[CONTENT_TYPE] in IMAGE_FORMATS:
+        return True
+    return False
 
 
 def random_string(length=None):

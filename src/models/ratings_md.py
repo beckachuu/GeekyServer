@@ -1,4 +1,5 @@
 from init_app import db
+from src.const import *
 
 
 class Ratings(db.Model):
@@ -20,3 +21,14 @@ class Ratings(db.Model):
             'stars': self.stars,
             'content': self.content,
         }
+
+    def is_valid_stars(self, new_stars):
+        if new_stars.isnumeric() and self.stars != new_stars and new_stars >= 1 and new_stars <= 5:
+            return True
+        return False
+
+    def update_content(self, new_content):
+        if self.content != new_content:
+            self.content = new_content
+            return True
+        return False

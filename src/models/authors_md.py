@@ -1,4 +1,7 @@
 from init_app import db
+from src.const import *
+from src.utils import is_valid_name, is_url_image
+import validators as val
 
 
 class Authors(db.Model):
@@ -25,3 +28,23 @@ class Authors(db.Model):
             'social_account': self.social_account,
             'website': self.website,
         }
+
+    def update_author_name(self, new_author_name):
+        if new_author_name != self.author_name and is_valid_name(new_author_name, NAME_MAX_LENGTH):
+            self.author_name = new_author_name
+            return True
+        return False
+
+    def update_profile_pic(self, new_pic_url):
+        if new_pic_url != self.profile_pic and is_url_image(new_pic_url):
+            self.profile_pic = new_pic_url
+            return True
+        return False
+
+    def update_social_account(self, new_social_acc_url):
+        if new_social_acc_url != self.social_account and val.url(new_social_acc_url):
+            self.social_account = new_social_acc_url
+
+    def update_website(self, new_website):
+        if new_website != self.website and val.url(new_website):
+            self.website = new_website

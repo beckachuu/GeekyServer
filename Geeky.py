@@ -23,7 +23,10 @@ api.add_resource(ManageMyAccount, '/my_account')
 
 api.add_resource(MainPage, '/')
 api.add_resource(Search, '/search_result')
+api.add_resource(Book, '/book/<int:book_id>')
 
 
 if __name__ == '__main__':
+    from src.utils import *
+
     app.run(debug=True)

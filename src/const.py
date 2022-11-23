@@ -1,9 +1,9 @@
 
-
-# id_info.json important keys
+# general keys
 EMAIL = 'email'
 NAME = 'name'
 PICTURE = 'picture'
+CONTENT_TYPE = "content-type"
 
 MUGGLE_USER = 0
 ADMIN = 1
@@ -26,3 +26,12 @@ USERNAME = 'username'
 PHONE = 'phone'
 PROFILE_PIC = 'profile_pic'
 THEME = 'theme_preference'
+
+# constraints for data fields
+NAME_MAX_LENGTH = 70
+STATE_LENGTH = 100
+ID_MAX_LENGTH = 20
+PHONE_LENGTH = 10
+GENRE_MAX_LENGTH = 40
+COLL_NAME_MAX_LENGTH = 50
+IMAGE_FORMATS = ("image/png", "image/jpeg", "image/jpg")

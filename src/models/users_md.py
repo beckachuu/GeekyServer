@@ -1,6 +1,8 @@
 from init_app import db
 from src.models.collections_md import Collections
-from src.utils import get_username_from_email
+from src.utils import (get_username_from_email, is_url_image, is_valid_name,
+                       is_valid_username, validate_phone)
+from src.const import *
 
 
 class Users(db.Model):
@@ -38,3 +40,19 @@ class Users(db.Model):
             'collections': {"collection_list": collection_list,
                             "collection_count": len(collection_list)},
         }
+
+    def update_username(self, new_username):
+        if self.username != new_username and is_valid_username(new_username):
+            self.username = new_username
+            return True
+        return False
+
+    def update_name(self, new_name):
+        return is_valid_name(new_name)
+
+    def update_phone(self, new_phone):
+        true_phone = validate_phone(new_phone)
+        return id.isnumeric()
+
+    def update_profile_pic(self, new_pic_url):
+        return is_url_image(new_pic_url)
