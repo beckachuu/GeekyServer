@@ -12,12 +12,19 @@ class Authors(db.Model):
     social_account = db.Column(db.String)
     website = db.Column(db.String)
 
-    def __init__(self, author_name,  profile_pic=None, bio=None, website=None, social_account=None):
-        self.author_name = author_name
-        self.profile_pic = profile_pic
-        self.bio = bio
-        self.social_account = social_account
-        self.website = website
+    # def __init__(self, author_name,  profile_pic=None, bio=None, website=None, social_account=None):
+    #     self.author_name = author_name
+    #     self.profile_pic = profile_pic
+    #     self.bio = bio
+    #     self.social_account = social_account
+    #     self.website = website
+
+    def __init__(self):
+        self.author_name = None
+        self.profile_pic = None
+        self.bio = None
+        self.social_account = None
+        self.website = None
 
     def get_json(self):
         return {
@@ -38,6 +45,12 @@ class Authors(db.Model):
     def update_profile_pic(self, new_pic_url):
         if new_pic_url != self.profile_pic and is_url_image(new_pic_url):
             self.profile_pic = new_pic_url
+            return True
+        return False
+
+    def update_bio(self, new_bio):
+        if self.bio != new_bio:
+            self.bio = new_bio
             return True
         return False
 

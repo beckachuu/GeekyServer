@@ -113,3 +113,20 @@ def lev_dist(string1, string2):
         )
 
     return min_dist(0, 0)
+
+
+def is_similar(s1, s2):
+    if s1 is None or s2 is None:
+        return False
+
+    if len(s1) > len(s2):
+        longer = s1
+        shorter = s2
+    else:
+        longer = s2
+        shorter = s1
+
+    longerLength = len(longer)
+
+    return ((longerLength - lev_dist(longer, shorter)) /
+            longerLength) > MIN_LEV_DIFF_PERCENT

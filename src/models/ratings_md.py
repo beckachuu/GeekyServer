@@ -22,7 +22,7 @@ class Ratings(db.Model):
             'content': self.content,
         }
 
-    def is_valid_stars(self, new_stars):
+    def update_stars(self, new_stars):
         if new_stars.isnumeric() and self.stars != new_stars and new_stars >= 1 and new_stars <= 5:
             return True
         return False

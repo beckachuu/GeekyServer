@@ -1,12 +1,9 @@
-import google.auth.transport.requests
-import requests
-from flask import redirect, request, session
+from flask import request
 from flask_restful import Resource
 
-from src.const import MESSAGE
+from src.const import *
 from src.controller.auth import login_required
-
-# from controller.auth1 import login_required
+from src.services.books_sv import *
 
 
 class MainPage(Resource):
@@ -15,15 +12,19 @@ class MainPage(Resource):
         return {MESSAGE: "You're at our main page"}
 
 
-class Search(Resource):
+class BooksSearch(Resource):
     def get(self):
-        book_results = ["book1", "book2"]
-        author_results = ["author1", "author2"]
-        userId = request.args.get('userId')
-        return {MESSAGE: "search successful"}, 200
+        query_string = request.args.get(QUERY)
+        result_by_name, status1 = search_by_name(query_string)
+        result_by_author, status2 = search_by_author(query_string)
+
+        if status1 == OK_STATUS or status2 == OK_STATUS:
+            return result_by_name+result_by_author, OK_STATUS
+        else:
+            return {MESSAGE: "No book found"}, NOT_FOUND
 
 
-class Book(Resource):
+class BookDetail(Resource):
     def get(self, book_id):
         result = request.get_json()
         return {MESSAGE: result['book']}
@@ -34,7 +35,7 @@ class Recommendation(Resource):
         book_list = []
         return book_list
 
-    # @login_required()
+    @login_required()
     def post(self):
-        # Send user's activity to update recommendatión
+        # Send user's activity to update recommendation
         return {MESSAGE: "suceeded"}

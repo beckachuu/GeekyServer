@@ -26,21 +26,20 @@ def edit_own_account(username=None, name=None, phone=None, profile_pic=None, the
     if account is None:
         return None, NOT_FOUND
 
-    if username and not equal(username, account.username):
+    if account.update_username(username):
         updated = True
-        account.username = username
-    if name and not equal(name, account.name):
+
+    if account.update_name(name):
         updated = True
-        account.name = name
-    if phone and not equal(phone, account.phone):
+
+    if account.update_phone(phone):
         updated = True
-        account.phone = phone
-    if profile_pic and not equal(profile_pic, account.profile_pic):
+
+    if account.update_profile_pic(profile_pic):
         updated = True
-        account.profile_pic = profile_pic
-    if theme_preference and not equal(theme_preference, account.theme_preference):
+
+    if account.update_theme_preference(theme_preference):
         updated = True
-        account.theme_preference = theme_preference
 
     if updated:
         db.session.commit()
@@ -100,12 +99,12 @@ def change_noti_pref(noti_pref):
 
 
 @admin_only()
-def get_user_info(username):
+def get_user_list():
     pass
 
 
 @admin_only()
-def create_admin_account():
+def change_user_role(username, new_role):
     pass
 
 
@@ -119,9 +118,9 @@ def add_book():
     pass
 
 
-@admin_only()
-def edit_book_info():
-    pass
+# @admin_only()
+# def edit_book_info():
+#     pass
 
 
 @admin_only()
@@ -129,6 +128,6 @@ def remove_book():
     pass
 
 
-@admin_only()
-def remove_rating():
-    pass
+# @admin_only()
+# def remove_rating():
+#     pass

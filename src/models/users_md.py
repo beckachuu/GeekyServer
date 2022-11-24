@@ -48,11 +48,26 @@ class Users(db.Model):
         return False
 
     def update_name(self, new_name):
-        return is_valid_name(new_name)
+        if self.name != new_name and is_valid_name(new_name):
+            self.name = new_name
+            return True
+        return False
 
     def update_phone(self, new_phone):
-        true_phone = validate_phone(new_phone)
-        return id.isnumeric()
+        new_phone = validate_phone(new_phone)
+        if self.phone != new_phone:
+            self.phone = new_phone
+            return True
+        return False
 
     def update_profile_pic(self, new_pic_url):
-        return is_url_image(new_pic_url)
+        if self.profile_pic != new_pic_url and is_url_image(new_pic_url):
+            self.profile_pic = new_pic_url
+            return True
+        return False
+
+    def update_theme_preference(self, new_theme_pref):
+        if self.theme_preference != new_theme_pref and new_theme_pref.isnumeric():
+            self.theme_preference = new_theme_pref
+            return True
+        return False

@@ -82,9 +82,11 @@ class Logout(Resource):
         return response
 
 
-class ManageMyAccount(Resource):
+class MyAccount(Resource):
     @login_required()
     def get(self):
+        userId = request.args.get('userId')
+
         account = get_own_account()
         if account is not None:
             return account.get_json(), OK_STATUS
@@ -101,12 +103,30 @@ class ManageMyAccount(Resource):
         profile_pic = request_args.get(PROFILE_PIC)
         theme_preference = request_args.get(THEME)
 
-        code = edit_own_account(username, name, phone,
-                                profile_pic, theme_preference)
+        status = edit_own_account(username, name, phone,
+                                  profile_pic, theme_preference)
 
-        if code == OK_STATUS:
+        if status == OK_STATUS:
             return {MESSAGE: "Your profile is updated"}, OK_STATUS
-        elif code == NO_CONTENT:
+        elif status == NO_CONTENT:
             return {MESSAGE: "Your profile is the same"}, OK_STATUS
         else:
             return {MESSAGE: "Account not found"}, NOT_FOUND
+
+
+class ChangeRole(Resource):
+    @admin_only()
+    def get(self):
+        username = request.args.get(USERNAME)
+        role = request.args.get(USER_ROLE)
+
+        user = Users.query.filter_by(username=username).first()
+        if role == ADMIN:
+            user.user_role = ADMIN
+            db.session.commit()
+            return {MESSAGE: "The admin team has a new member!"}
+        if role == MUGGLE_USER:
+            user.user_role = MUGGLE_USER
+            db.session.commit()
+            return {MESSAGE: "Another muggle!"}
+        return {MESSAGE: "Please recheck the role you want this user to have"}
