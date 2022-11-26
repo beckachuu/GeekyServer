@@ -11,11 +11,12 @@ from pip._vendor import cachecontrol
 from init_app import db
 from config.config import GOOGLE_CLIENT_ID, flow
 from src.const import *
-from src.controller.auth import get_current_user, admin_only, login_required, remove_current_state
+from src.controller.auth import remove_current_state
 from src.models.states_md import States
 from src.models.users_md import Users
 from src.services.users_sv import *
 from src.utils import *
+from src.services.ratings_sv import *
 
 
 class Login(Resource):
@@ -80,53 +81,3 @@ class Logout(Resource):
         response = redirect("/")
         response.delete_cookie(STATE)
         return response
-
-
-class MyAccount(Resource):
-    @login_required()
-    def get(self):
-        userId = request.args.get('userId')
-
-        account = get_own_account()
-        if account is not None:
-            return account.get_json(), OK_STATUS
-        else:
-            return {MESSAGE: "Account not found"}, NOT_FOUND
-
-    @login_required()
-    def post(self):
-        request_args = request.args
-
-        username = request_args.get(USERNAME)
-        name = request_args.get(NAME)
-        phone = request_args.get(PHONE)
-        profile_pic = request_args.get(PROFILE_PIC)
-        theme_preference = request_args.get(THEME)
-
-        status = edit_own_account(username, name, phone,
-                                  profile_pic, theme_preference)
-
-        if status == OK_STATUS:
-            return {MESSAGE: "Your profile is updated"}, OK_STATUS
-        elif status == NO_CONTENT:
-            return {MESSAGE: "Your profile is the same"}, OK_STATUS
-        else:
-            return {MESSAGE: "Account not found"}, NOT_FOUND
-
-
-class ChangeRole(Resource):
-    @admin_only()
-    def get(self):
-        username = request.args.get(USERNAME)
-        role = request.args.get(USER_ROLE)
-
-        user = Users.query.filter_by(username=username).first()
-        if role == ADMIN:
-            user.user_role = ADMIN
-            db.session.commit()
-            return {MESSAGE: "The admin team has a new member!"}
-        if role == MUGGLE_USER:
-            user.user_role = MUGGLE_USER
-            db.session.commit()
-            return {MESSAGE: "Another muggle!"}
-        return {MESSAGE: "Please recheck the role you want this user to have"}

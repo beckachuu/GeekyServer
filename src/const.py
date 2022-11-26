@@ -29,10 +29,22 @@ USER_ROLE = 'user_role'
 PHONE = 'phone'
 PROFILE_PIC = 'profile_pic'
 THEME = 'theme_preference'
+# author
+AUTHOR_ID = 'author_id'
 AUTHOR_NAME = 'author_name'
 BIO = 'bio'
 SOCIAL_ACCOUNT = 'social_account'
 WEBSITE = 'website'
+# book
+BOOK_ID = 'book_id'
+TITLE = 'title'
+TRANSLATOR = 'translator'
+COVER = 'cover'
+PAGE_COUNT = 'page_count'
+PUBLIC_YEAR = 'public_year'
+CONTENT = 'content'
+DESCRIPT = 'descript'
+REPUBLISH_COUNT = 'republish_count'
 
 # constraints for data fields
 NAME_MAX_LENGTH = 70
@@ -45,3 +57,5 @@ IMAGE_FORMATS = ("image/png", "image/jpeg", "image/jpg")
 
 # constraints for queries
 MIN_LEV_DIFF_PERCENT = 0.5
+MAX_RESULT_COUNT = 20
+MAX_ID = 2147483647

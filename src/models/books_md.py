@@ -1,5 +1,5 @@
 from init_app import db
-from src.models.authors_books_md import Books_Authors
+from src.models.authors_books_md import BooksAuthors
 from src.models.genres_md import Genres
 from src.models.ratings_md import Ratings
 from src.utils import *
@@ -17,15 +17,15 @@ class Books(db.Model):
     republish_count = db.Column(db.Integer)
     current_rating = db.Column(db.Float)
 
-    def __init__(self, title, page_count, public_year, content, descript, translator=None, cover=None, republish_count=None):
-        self.title = title
-        self.translator = translator
-        self.cover = cover
-        self.page_count = page_count
-        self.public_year = public_year
-        self.content = content
-        self.descript = descript
-        self.republish_count = republish_count
+    def __init__(self):
+        self.title = None
+        self.translator = None
+        self.cover = None
+        self.page_count = None
+        self.public_year = None
+        self.content = None
+        self.descript = None
+        self.republish_count = None
         self.current_rating = None
 
     def get_summary_json(self):
@@ -34,7 +34,7 @@ class Books(db.Model):
         for book_genre in genre_query:
             genres.append(book_genre.genre)
 
-        authors_query = Books_Authors.query.filter_by(book_id=self.book_id)
+        authors_query = BooksAuthors.query.filter_by(book_id=self.book_id)
         authors = []
         for author in authors_query:
             authors.append({author.author_id: author.author_name})
@@ -53,7 +53,7 @@ class Books(db.Model):
         for book_genre in genre_query:
             genres.append(book_genre.genre)
 
-        authors_query = Books_Authors.query.filter_by(book_id=self.book_id)
+        authors_query = BooksAuthors.query.filter_by(book_id=self.book_id)
         authors = []
         for author in authors_query:
             authors.append({author.author_id: author.author_name})
@@ -100,8 +100,25 @@ class Books(db.Model):
             return True
         return False
 
+    def update_content(self, new_content):
+        if self.content != new_content:
+            self.content = new_content
+            return True
+        return False
+
+    def update_descript(self, new_descript):
+        if self.descript != new_descript:
+            self.descript = new_descript
+            return True
+        return False
+
     def update_republish_count(self, new_republish_count):
         if self.republish_count != new_republish_count and new_republish_count.isnumeric():
             self.republish_count = new_republish_count
+            return True
+        return False
+
+    def is_valid_book(self, title, page_count, public_year, content, descript):
+        if self.update_title(title) and self.update_page_count(page_count) and self.update_public_year(public_year) and self.update_content(content) and self.update_descript(descript):
             return True
         return False

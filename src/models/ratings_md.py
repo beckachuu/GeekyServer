@@ -8,11 +8,11 @@ class Ratings(db.Model):
     stars = db.Column(db.Integer)
     content = db.Column(db.String)
 
-    def __init__(self, username, book_id, stars, content):
-        self.username = username
-        self.book_id = book_id
-        self.stars = stars
-        self.content = content
+    def __init__(self):
+        self.username = None
+        self.book_id = None
+        self.stars = None
+        self.content = None
 
     def get_json(self):
         return {

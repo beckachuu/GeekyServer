@@ -1,12 +1,12 @@
-import sqlalchemy as sql
 from flask import request
 
 from init_app import db
 from src.models.users_md import Users
 from src.const import *
+from src.models.ratings_md import Ratings
 from src.controller.auth import login_required, admin_only
 from src.const import EMAIL
-from src.utils import equal
+from src.models.subscription_md import Subscription
 
 
 @login_required()
@@ -20,8 +20,6 @@ def get_own_account():
 def edit_own_account(username=None, name=None, phone=None, profile_pic=None, theme_preference=None):
     account = get_own_account()
     updated = False
-
-    # TODO: handle MySQLdb.DataError: (1406, "Data too long for column...)
 
     if account is None:
         return None, NOT_FOUND
@@ -53,39 +51,13 @@ def remove_own_account():
     pass
 
 
-@login_required()
-def subscribe_to_author():
-    pass
-
-
-@login_required()
-def create_collection():
-    pass
-
-
-@login_required()
-def get_collections():
-    pass
-
-
-@login_required()
-def get_collection_by_name():
-    pass
-
-
-@login_required()
-def edit_collection_name(name=None):
-    pass
-
-
-@login_required()
-def remove_book_from_collections(book_id):
-    pass
-
-
-@login_required()
-def get_my_rates():
-    pass
+def subscribe_to_author(username, author_id):
+    new_subscription = Subscription()
+    if new_subscription.update_username(username) and new_subscription.update_author_id(author_id):
+        db.session.add(new_subscription)
+        db.session.commit()
+        return OK_STATUS
+    return BAD_REQUEST
 
 
 @login_required()
@@ -113,21 +85,9 @@ def remove_user(username):
     pass
 
 
-@admin_only()
-def add_book():
-    pass
-
-
-# @admin_only()
-# def edit_book_info():
-#     pass
-
-
-@admin_only()
-def remove_book():
-    pass
-
-
 # @admin_only()
 # def remove_rating():
 #     pass
+
+def ban_user():
+    pass

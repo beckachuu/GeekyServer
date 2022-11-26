@@ -19,6 +19,7 @@ class AuthorsSearch(Resource):
         '''
 
         query_string = request.args.get(QUERY)
+
         result, status = search_by_name(query_string)
 
         if status == OK_STATUS:

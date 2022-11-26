@@ -56,6 +56,12 @@ def is_url_image(image_url):
     return False
 
 
+def is_valid_id(id_num):
+    if id_num >= 1 and id_num <= MAX_ID:
+        return True
+    return False
+
+
 def random_string(length=None):
     if length is None:
         length = random.randint(5, 20)

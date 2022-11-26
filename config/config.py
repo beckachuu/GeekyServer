@@ -18,7 +18,7 @@ USE_CREDENTIALS = True
 SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/w22g7_geek'
 
 # For phpmyadmin:
-# SQLALCHEMY_DATABASE_URI = 'http://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
+# SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
 
 SESSION_TYPE = 'filesystem'
 SESSION_PERMANENT = True

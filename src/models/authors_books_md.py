@@ -1,10 +1,11 @@
 from init_app import db
+from src.utils import is_valid_id
 
 
-class Books_Authors(db.Model):
+class BooksAuthors(db.Model):
     author_id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, author_id,  book_id):
-        self.author_id = author_id
-        self.book_id = book_id
+    def __init__(self):
+        self.author_id = None
+        self.book_id = None

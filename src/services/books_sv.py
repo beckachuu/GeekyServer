@@ -1,10 +1,27 @@
 from init_app import db
+from src.const import *
+from src.models.authors_books_md import BooksAuthors
 from src.models.authors_md import Authors
 from src.models.books_md import Books
-from src.models.authors_books_md import Books_Authors
-from src.services.ratings_sv import get_book_ratings_by_stars
+from src.services.ratings_sv import get_ratings_by_stars
 from src.utils import is_similar
-from src.const import *
+from src.controller.auth import admin_only
+
+
+def get_general_recommendation(limit=MAX_RESULT_COUNT):
+    # TODO
+    pass
+
+
+def get_recent_updated(limit=MAX_RESULT_COUNT):
+    # TODO
+    pass
+
+
+def get_personal_recommendation(user, limit=MAX_RESULT_COUNT):
+    # by user ratings, subscription, bookmarks, collections
+    # TODO
+    pass
 
 
 def search_by_name(query):
@@ -19,7 +36,7 @@ def search_by_name(query):
 
 
 def search_by_author(query):
-    books_authors = Books_Authors.query.all()
+    books_authors = BooksAuthors.query.all()
     result = []
 
     for books_author in books_authors:
@@ -35,21 +52,38 @@ def search_by_author(query):
 
 def get_detail_info(book_id):
     book = Books.query.filter_by(book_id=book_id).first()
-    return book.get_detail_json() + {
-        'one_stars': get_book_ratings_by_stars(book_id, 1),
-        'two_stars': get_book_ratings_by_stars(book_id, 2),
-        'three_stars': get_book_ratings_by_stars(book_id, 3),
-        'four_stars': get_book_ratings_by_stars(book_id, 4),
-        'five_stars': get_book_ratings_by_stars(book_id, 5),
-    }
+    if book is None:
+        return None, NOT_FOUND
 
-# general: by ratings + reports (of the books)
-# personal: by rating + report activities
+    ratings = {}
+    for i in range(1, 6):
+        ratings.update(get_ratings_by_stars(book_id, i))
+
+    return ratings, OK_STATUS
 
 
-def recommendation():
+@admin_only()
+def add_book(json):
+    book = Books()
+
+    if book.is_valid_book(json[TITLE], json[PAGE_COUNT], json[PUBLIC_YEAR], json[CONTENT], json[DESCRIPT]):
+        book.update_translator(json[TRANSLATOR])
+        book.update_cover(json[COVER])
+        book.update_republish_count(json[REPUBLISH_COUNT])
+
+        db.session.add(book)
+        db.session.commit()
+
+        return book.get_json(), OK_STATUS
+
+    return None, BAD_REQUEST
+
+
+@admin_only()
+def edit_book_info():
     pass
 
 
-def get_sharable_links():
+@admin_only()
+def remove_book():
     pass
