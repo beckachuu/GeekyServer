@@ -2,9 +2,12 @@ import random
 import re
 import string
 import time
+from datetime import datetime
 from functools import lru_cache
-from src.const import *
+
 import requests
+
+from src.const import *
 
 regex_name = '^[A-Za-z_][A-Za-z0-9_]*'
 regex_username = '^[A-Za-z][A-Za-z0-9]*'
@@ -57,9 +60,19 @@ def is_url_image(image_url):
 
 
 def is_valid_id(id_num):
-    if id_num >= 1 and id_num <= MAX_ID:
+    if int(id_num) >= 1 and int(id_num) <= MAX_ID:
         return True
     return False
+
+
+def is_valid_datetime(datetime_str):
+    today = datetime.today()
+    try:
+        datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')
+        if datetime_obj > today:
+            return True
+    except:
+        return False
 
 
 def random_string(length=None):

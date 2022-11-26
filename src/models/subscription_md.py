@@ -6,9 +6,9 @@ class Subscription(db.Model):
     author_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20))
 
-    def __init__(self, author_name,  username):
-        self.author_name = author_name
-        self.username = username
+    def __init__(self):
+        self.author_name = None
+        self.username = None
 
     # def get_json(self):
     #     return {
@@ -17,7 +17,7 @@ class Subscription(db.Model):
     #     }
 
     def update_author_id(self, new_author_id):
-        if self.author_id != new_author_id and is_valid_id(new_author_id):
+        if self.author_id != new_author_id and new_author_id != "" and is_valid_id(new_author_id):
             self.author_id = new_author_id
             return True
         return False

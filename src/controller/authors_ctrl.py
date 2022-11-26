@@ -31,7 +31,7 @@ class AuthorsSearch(Resource):
 class AuthorInfo(Resource):
 
     def get(self):
-        author_id = request.args.get(QUERY)
+        author_id = request.args.get(AUTHOR_ID)
         result, status = get_info(author_id)
 
         if status == OK_STATUS:

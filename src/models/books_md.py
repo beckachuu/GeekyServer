@@ -1,7 +1,7 @@
 from init_app import db
 from src.models.authors_books_md import BooksAuthors
+from src.models.authors_md import Authors
 from src.models.genres_md import Genres
-from src.models.ratings_md import Ratings
 from src.utils import *
 
 
@@ -28,16 +28,26 @@ class Books(db.Model):
         self.republish_count = None
         self.current_rating = None
 
+    def get_authors_list(self):
+        authors = []
+
+        books_authors = BooksAuthors.query.filter_by(
+            book_id=self.book_id)
+
+        for book_author in books_authors:
+            author = Authors.query.filter_by(
+                author_id=book_author.author_id).first()
+            authors.append({book_author.author_id: author.author_name})
+
+        return authors
+
     def get_summary_json(self):
         genre_query = Genres.query.filter_by(book_id=self.book_id)
         genres = []
         for book_genre in genre_query:
             genres.append(book_genre.genre)
 
-        authors_query = BooksAuthors.query.filter_by(book_id=self.book_id)
-        authors = []
-        for author in authors_query:
-            authors.append({author.author_id: author.author_name})
+        authors = self.get_authors_list()
 
         return {
             'book_id': self.book_id,
@@ -53,10 +63,7 @@ class Books(db.Model):
         for book_genre in genre_query:
             genres.append(book_genre.genre)
 
-        authors_query = BooksAuthors.query.filter_by(book_id=self.book_id)
-        authors = []
-        for author in authors_query:
-            authors.append({author.author_id: author.author_name})
+        authors = self.get_authors_list()
 
         return {
             'book_id': self.book_id,
@@ -68,6 +75,7 @@ class Books(db.Model):
             'public_year': self.public_year,
             'republish_count': self.republish_count,
             'descript': self.descript,
+            'content': self.content
         }
 
     def update_title(self, new_title):
@@ -89,13 +97,13 @@ class Books(db.Model):
         return False
 
     def update_page_count(self, new_page_count):
-        if self.page_count != new_page_count and new_page_count.isnumeric():
+        if self.page_count != new_page_count and isinstance(new_page_count, int):
             self.page_count = new_page_count
             return True
         return False
 
     def update_public_year(self, new_public_year):
-        if self.public_year != new_public_year and new_public_year.isnumeric():
+        if self.public_year != new_public_year and isinstance(new_public_year, int):
             self.public_year = new_public_year
             return True
         return False
@@ -113,7 +121,7 @@ class Books(db.Model):
         return False
 
     def update_republish_count(self, new_republish_count):
-        if self.republish_count != new_republish_count and new_republish_count.isnumeric():
+        if self.republish_count != new_republish_count and isinstance(new_republish_count, int):
             self.republish_count = new_republish_count
             return True
         return False

@@ -1,9 +1,11 @@
+from datetime import datetime
 from functools import wraps
 
 from flask import redirect, request
-from src.models.states_md import States
+
 from init_app import db
 from src.const import *
+from src.models.states_md import States
 from src.models.users_md import Users
 from src.utils import equal
 
@@ -13,16 +15,19 @@ def login_required():
         @wraps(function)
         def real_func(*args, **kwargs):
             cookies_state = request.cookies.get(STATE)
-            # print("STATE IN LOGIN-REQUIRED(): ", request.cookies.get(STATE))  # gud
 
             if not cookies_state:
-                # print("YOU DONT HAVE ANY COOKIE STATE")
                 return redirect("/login")
             else:
                 user = Users.query.filter_by(login_state=cookies_state).first()
                 if not user:
-                    # print("NO USER WITH THIS COOKIE STATE: ", cookies_state)
                     return redirect("/login")
+                if user.restrict_due is not None:
+                    if user.restrict_due < datetime.today():
+                        user.restrict_due = None
+                        db.session.commit()
+                    else:
+                        return {MESSAGE: "Your account is restricted."}
 
             return function(*args, **kwargs)
         return real_func

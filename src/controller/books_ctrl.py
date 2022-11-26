@@ -9,9 +9,9 @@ from src.services.books_sv import *
 class MainPage(Resource):
     def get(self):
         user = get_current_user()
-        result = get_general_recommendation()
+        result, _ = get_general_recommendation()
         if user is not None:
-            result += get_general_recommendation(user)
+            result.append(get_personal_recommendation(user))
         return result, OK_STATUS
 
 
@@ -23,7 +23,7 @@ class BooksSearch(Resource):
         result_by_author, status2 = search_by_author(query_string)
 
         if status1 == OK_STATUS or status2 == OK_STATUS:
-            return result_by_name+result_by_author, OK_STATUS
+            return result_by_name + result_by_author, OK_STATUS
         else:
             return {MESSAGE: "No book found"}, NOT_FOUND
 
@@ -50,4 +50,10 @@ class BookDetail(Resource):
 
     @admin_only()
     def put(self):
-        pass
+        book_info = request.get_json()
+        result, status = edit_book_info(book_info)
+
+        if status == OK_STATUS:
+            return result, OK_STATUS
+        else:
+            return {MESSAGE: "Book info isn't changed, please make sure that you provided new and valid info for the book."}, BAD_REQUEST

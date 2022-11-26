@@ -1,12 +1,14 @@
+import sqlalchemy
 from flask import request
 
 from init_app import db
-from src.models.users_md import Users
 from src.const import *
-from src.models.ratings_md import Ratings
-from src.controller.auth import login_required, admin_only
 from src.const import EMAIL
+from src.controller.auth import admin_only, login_required
+from src.models.ratings_md import Ratings
 from src.models.subscription_md import Subscription
+from src.models.users_md import Users
+from src.utils import equal
 
 
 @login_required()
@@ -54,9 +56,12 @@ def remove_own_account():
 def subscribe_to_author(username, author_id):
     new_subscription = Subscription()
     if new_subscription.update_username(username) and new_subscription.update_author_id(author_id):
-        db.session.add(new_subscription)
-        db.session.commit()
-        return OK_STATUS
+        try:
+            db.session.add(new_subscription)
+            db.session.commit()
+            return OK_STATUS
+        except sqlalchemy.exc.IntegrityError:
+            return CONFLICT
     return BAD_REQUEST
 
 
@@ -75,12 +80,33 @@ def get_user_list():
     pass
 
 
-@admin_only()
 def change_user_role(username, new_role):
-    pass
+    user = Users.query.filter_by(username=username).first()
+
+    if user is None:
+        return NOT_FOUND
+
+    if equal(user.user_role, new_role):
+        return CONFLICT
+
+    if new_role == ADMIN or new_role == MUGGLE_USER:
+        user.user_role = new_role
+        db.session.commit()
+        return OK_STATUS
+    return BAD_REQUEST
 
 
-@admin_only()
+def ban_user(username, restrict_due):
+    user = Users.query.filter_by(username=username).first()
+    if user is None:
+        return NOT_FOUND
+
+    if user.update_restrict_due(restrict_due):
+        db.session.commit()
+        return OK_STATUS
+    return BAD_REQUEST
+
+
 def remove_user(username):
     pass
 
@@ -88,6 +114,3 @@ def remove_user(username):
 # @admin_only()
 # def remove_rating():
 #     pass
-
-def ban_user():
-    pass

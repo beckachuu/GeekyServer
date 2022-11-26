@@ -23,6 +23,7 @@ api.add_resource(MyAccount, '/my_account')
 api.add_resource(MyRatings, '/my_ratings')
 api.add_resource(Subscribe, '/subscribe')
 api.add_resource(ChangeRole, '/change_role')
+api.add_resource(BanUser, '/ban_user')
 
 
 api.add_resource(MainPage, '/')

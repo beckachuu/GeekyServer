@@ -7,21 +7,40 @@ class Genres(db.Model):
     book_id = db.Column(db.Integer, primary_key=True)
     genre = db.Column(db.String, primary_key=True)
 
-    def __init__(self, book_id, genre):
-        self.book_id = book_id
-        self.genre = genre
+    def __init__(self):
+        self.book_id = None
+        self.genre = None
 
     @staticmethod
-    def update_genre(book_id, new_genres):
-        if isinstance(new_genres, list):
+    def add_genres(book_id, new_genres):
+        if not isinstance(new_genres, list):
             return False
 
         for genre in new_genres:
             if not is_valid_name(genre, GENRE_MAX_LENGTH):
                 return False
+            new = Genres()
+            new.book_id = book_id
+            new.genre = genre
+            db.session.add(new)
 
-        book_genres_query = Genres.query.filter_by(book_id=book_id)
-        for book in book_genres_query:
-            for genre in new_genres:
-                book.genre = genre
+        db.session.commit()
         return True
+
+    @staticmethod
+    def update_genres(book_id, new_genres):
+        if not isinstance(new_genres, list):
+            return False
+
+        books_genres = Genres.query.filter_by(book_id=book_id)
+        current_genres = []
+        for book_genre in books_genres:
+            current_genres.append(book_genre.genre)
+            db.session.delete(book_genre)
+
+        current_genres.sort()
+        new_genres.sort()
+        if current_genres == new_genres:
+            return False
+
+        return Genres.add_genres(book_id, new_genres)

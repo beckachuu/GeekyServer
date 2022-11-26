@@ -39,7 +39,7 @@ class MyAccount(Resource):
         elif status == NOT_FOUND:
             return {MESSAGE: "Account not found"}, NOT_FOUND
         else:
-            return {MESSAGE: "We've encountered a problem"}, BAD_REQUEST
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class ChangeRole(Resource):
@@ -48,22 +48,17 @@ class ChangeRole(Resource):
         username = request.args.get(USERNAME)
         new_role = request.args.get(USER_ROLE)
 
-        user = Users.query.filter_by(username=username).first()
-        if user is None:
-            return {MESSAGE: "Can't find that user"}, NO_CONTENT
-
-        if equal(user.user_role, new_role):
-            return {MESSAGE: "User already has this role"}, BAD_REQUEST
-
-        if new_role == ADMIN:
-            user.user_role = ADMIN
-            db.session.commit()
-            return {MESSAGE: "The admin team has a new member!"}
-        if new_role == MUGGLE_USER:
-            user.user_role = MUGGLE_USER
-            db.session.commit()
-            return {MESSAGE: "Another muggle!"}
-        return {MESSAGE: "Please recheck the role you want this user to have"}
+        status = change_user_role(username, new_role)
+        if status == NOT_FOUND:
+            return {MESSAGE: "Can't find that user"}, NOT_FOUND
+        elif status == CONFLICT:
+            return {MESSAGE: "User already has this role"}, CONFLICT
+        elif status == OK_STATUS:
+            return {MESSAGE: "User's social status has changed!"}
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "That's an invalid role..."}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class MyRatings(Resource):
@@ -74,8 +69,10 @@ class MyRatings(Resource):
         result, status = get_user_ratings(user.username)
         if status == OK_STATUS:
             return result, OK_STATUS
-        else:
+        elif status == NOT_FOUND:
             return {MESSAGE: "You have no rating, go read some books!"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
     def post(self, rating_json):
@@ -84,8 +81,10 @@ class MyRatings(Resource):
         result, status = post_user_rating(user.username, rating_json)
         if status == OK_STATUS:
             return result, OK_STATUS
-        else:
+        elif status == NOT_FOUND:
             return {MESSAGE: "Can't post your rating"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class Subscribe(Resource):
@@ -97,10 +96,25 @@ class Subscribe(Resource):
         status = subscribe_to_author(username, author_id)
         if status == OK_STATUS:
             return {MESSAGE: "Thank you for your subscription!"}, OK_STATUS
-        return {MESSAGE: "You can't subscribe to this author (probably because this author is just your illusion...)"}, BAD_REQUEST
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "You can't subscribe to this author (probably because this author is just your illusion...)"}, BAD_REQUEST
+        elif status == CONFLICT:
+            return {MESSAGE: "You're already subscribed to this author"}, CONFLICT
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class BanUser(Resource):
     @admin_only()
-    def post(self, user_id, ban_length):
-        pass
+    def post(self):
+        restrict_info = request.get_json()
+        username = restrict_info[USERNAME]
+        restrict_due = restrict_info['restrict_due']
+
+        status = ban_user(username, restrict_due)
+        if status == OK_STATUS:
+            return {MESSAGE: "This user is banned."}, OK_STATUS
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "Please check the date you want this user to be unbanned"}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS

@@ -53,11 +53,11 @@ class Callback(Resource):
         token_request = google.auth.transport.requests.Request(
             session=cached_session)
 
-        time.sleep(1.1)  # Avoid error "ValueError: Token used too early"
         id_info = id_token.verify_oauth2_token(
             id_token=credentials._id_token,
             request=token_request,
-            audience=GOOGLE_CLIENT_ID
+            audience=GOOGLE_CLIENT_ID,
+            clock_skew_in_seconds=3
         )
 
         current_email = id_info.get(EMAIL)

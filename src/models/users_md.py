@@ -1,8 +1,8 @@
 from init_app import db
-from src.models.collections_md import Collections
-from src.utils import (get_username_from_email, is_url_image, is_valid_name,
-                       is_valid_username, validate_phone)
 from src.const import *
+from src.models.collections_md import Collections
+from src.utils import (is_url_image, is_valid_datetime, is_valid_name,
+                       is_valid_username, validate_phone)
 
 
 class Users(db.Model):
@@ -14,15 +14,7 @@ class Users(db.Model):
     theme_preference = db.Column(db.Integer)
     login_state = db.Column(db.String)
     user_role = db.Column(db.Integer)
-
-    def __init__(self, email, name=None, phone=None, profile_pic=None, theme_preference=1, user_role=0):
-        self.username = get_username_from_email(email)
-        self.email = email
-        self.name = name
-        self.phone = phone
-        self.profile_pic = profile_pic
-        self.theme_preference = theme_preference
-        self.user_role = user_role
+    restrict_due = db.Column(db.DateTime)
 
     def get_json(self):
         collections_query = Collections.query.filter_by(username=self.username)
@@ -67,7 +59,13 @@ class Users(db.Model):
         return False
 
     def update_theme_preference(self, new_theme_pref):
-        if self.theme_preference != new_theme_pref and new_theme_pref.isnumeric():
+        if self.theme_preference != new_theme_pref and isinstance(new_theme_pref, int):
             self.theme_preference = new_theme_pref
+            return True
+        return False
+
+    def update_restrict_due(self, restrict_due):
+        if self.restrict_due != restrict_due and is_valid_datetime(restrict_due):
+            self.restrict_due = restrict_due
             return True
         return False

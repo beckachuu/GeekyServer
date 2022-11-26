@@ -19,6 +19,9 @@ UNAUTHORIZED = 401
 NOT_FOUND = 404
 CONFLICT = 409
 URI_TOO_LONG = 414
+SERVER_ERROR = 500
+NO_IDEA_WHAT_ERROR_THIS_IS = {
+    MESSAGE: "We've encountered a problem... Sorry ;-; "}, SERVER_ERROR
 
 
 # database keywords
@@ -45,6 +48,8 @@ PUBLIC_YEAR = 'public_year'
 CONTENT = 'content'
 DESCRIPT = 'descript'
 REPUBLISH_COUNT = 'republish_count'
+GENRES = 'genres'
+AUTHORS = 'authors'
 
 # constraints for data fields
 NAME_MAX_LENGTH = 70
