@@ -14,20 +14,15 @@ def create_collection():
 
 
 @login_required()
-def get_collections():
+def get_collection_details():
     pass
 
 
 @login_required()
-def get_collection_by_name():
+def edit_collection_name(new_name):
     pass
 
 
 @login_required()
-def edit_collection_name(name=None):
-    pass
-
-
-@login_required()
-def remove_book_from_collections(book_id):
+def remove_book_from_collection(book_id):
     pass

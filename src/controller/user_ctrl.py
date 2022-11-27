@@ -3,11 +3,10 @@ from flask_restful import Resource
 
 from init_app import db
 from src.const import *
-from src.controller.auth import get_current_user, admin_only, login_required
-from src.models.users_md import Users
+from src.controller.auth import admin_only, get_current_user, login_required
+from src.services.ratings_sv import *
 from src.services.users_sv import *
 from src.utils import *
-from src.services.ratings_sv import *
 
 
 class MyAccount(Resource):
@@ -38,6 +37,13 @@ class MyAccount(Resource):
             return {MESSAGE: "Your profile is the same. Please recheck your input"}, OK_STATUS
         elif status == NOT_FOUND:
             return {MESSAGE: "Account not found"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+    @login_required()
+    def delete(self):
+        if remove_own_account():
+            return {MESSAGE: "Your account is deleted."}, OK_STATUS
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 

@@ -48,9 +48,14 @@ def edit_own_account(username=None, name=None, phone=None, profile_pic=None, the
     return NO_CONTENT
 
 
-@login_required()
 def remove_own_account():
-    pass
+    user = get_own_account()
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        return OK_STATUS
+    except:
+        return SERVER_ERROR
 
 
 def subscribe_to_author(username, author_id):
@@ -111,6 +116,6 @@ def remove_user(username):
     pass
 
 
-# @admin_only()
-# def remove_rating():
-#     pass
+@admin_only()
+def remove_rating():
+    pass

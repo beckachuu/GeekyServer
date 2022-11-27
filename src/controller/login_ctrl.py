@@ -64,8 +64,7 @@ class Callback(Resource):
 
         user = Users.query.filter_by(email=current_email).first()
         if user is None:
-            user = Users(email=current_email)
-            user.profile_pic = id_info.get(PICTURE)
+            user = Users(email=current_email, profile_pic=id_info.get(PICTURE))
             db.session.add(user)
 
         user.login_state = db_state

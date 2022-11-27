@@ -1,6 +1,6 @@
 from init_app import db
 from src.const import *
-from src.controller.auth import admin_only
+from src.controller.auth import admin_only, login_required
 from src.models.authors_books_md import BooksAuthors
 from src.models.authors_md import Authors
 from src.models.books_md import Books
@@ -10,6 +10,7 @@ from src.utils import is_similar
 
 
 def get_general_recommendation(limit=MAX_RESULT_COUNT):
+    # TODO
     all_books = Books.query.all()
     result = []
     for book in all_books:
@@ -72,7 +73,6 @@ def get_detail_info(book_id):
     return result, OK_STATUS
 
 
-@admin_only()
 def add_book(json):
     book = Books()
 
@@ -92,7 +92,6 @@ def add_book(json):
     return None, BAD_REQUEST
 
 
-@admin_only()
 def edit_book_info(json):
     book = Books.query.filter_by(book_id=json[BOOK_ID]).first()
     updated = False
@@ -127,4 +126,19 @@ def edit_book_info(json):
 
 @ admin_only()
 def remove_book():
+    pass
+
+
+@login_required()
+def add_to_collection():
+    pass
+
+
+@login_required()
+def add_bookmark():
+    pass
+
+
+@login_required()
+def add_note():
     pass

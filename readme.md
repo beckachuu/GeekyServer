@@ -16,15 +16,16 @@
     "name": string,
     "phone": string,
     "profile_pic": string,
-    "theme": number }
+    "theme": int }
+- DELETE /my_account
 - GET /my_ratings
-- POST /subscribe?author_id=...
-- POST /change_role?username=...&user_role=... (0: normal user, 1: admin)
-- POST /ban_user?user_name=...&restrict_due=... (restrict_due format: Year-Month-Day Hour:Minute:Second)
+- POST /subscribe?author_id=<int>
+- POST /change_role?username=<string>&user_role=<int> (0: normal user, 1: admin)
+- POST /ban_user?username=<string>&restrict_due=<datetime> (restrict_due format: Year-Month-Day Hour:Minute:Second)
 ---
 - GET / : main page (not finished)
-- GET /books/search?query=... : search books by authors or books name
-- GET /books?book_id=... : get detail info of a book
+- GET /books/search?query=<string> : search books by authors or books name
+- GET /books?book_id=<int> : get detail info of a book
 - POST /books : post a new book (admin only)
 > JSON structure:
   { "title": string (mandatory),
@@ -41,8 +42,8 @@
 - PUT /books : change detail for a book (admin only)
 > JSON structure: same as above, plus "book_id" (POST /books)
 ---
-- GET /authors/search?query=...
-- GET /authors?author_id=...
+- GET /authors/search?query=<string>
+- GET /authors?author_id=<int>
 - POST /authors
 > JSON structure:
   { "author_name": string (mandatory),
