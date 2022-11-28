@@ -1,6 +1,9 @@
 ### Port: 5000
 
 ---
+Database diagram:
+
+![db_diagram](https://user-images.githubusercontent.com/78261243/204224617-d6a3726a-2421-40bf-8246-d8ccf496d670.png)
 ---
 
 ### URL:
