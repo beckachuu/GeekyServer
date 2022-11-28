@@ -15,9 +15,8 @@ from src.models.users_md import Users
 from src.utils import equal
 
 
-def get_own_account(username):
-    cookies_state = request.cookies.get(STATE)
-    user = Users.query.filter_by(login_state=cookies_state).first()
+def get_own_account():
+    user = get_current_user()
     if user is None:
         return None, NOT_FOUND
     return user.get_json(), OK_STATUS
@@ -26,9 +25,6 @@ def get_own_account(username):
 def edit_own_account(username, name, phone, profile_pic, theme_preference):
     user = get_current_user()
     updated = False
-
-    if user is None:
-        return None, NOT_FOUND
 
     if user.update_username(username):
         updated = True
@@ -57,12 +53,13 @@ def remove_own_account():
     try:
         username = user.username
 
+        all_colls = Collections.query.filter_by(username=username).all()
         all_noti = Notifications.query.filter_by(username=username).all()
         all_subs = Subscription.query.filter_by(username=username).all()
         all_bookmark = Bookmark.query.filter_by(username=username).all()
         all_rating = Ratings.query.filter_by(username=username).all()
 
-        to_delete = all_noti+all_bookmark+all_rating+all_subs
+        to_delete = all_noti+all_bookmark+all_rating+all_subs+all_colls
         for obj in to_delete:
             db.session.delete(obj)
 
@@ -75,9 +72,10 @@ def remove_own_account():
         return SERVER_ERROR
 
 
-def subscribe_to_author(username, author_id):
+def subscribe_to_author(author_id):
+    user = get_current_user()
     new_subscription = Subscription()
-    if new_subscription.update_username(username) and new_subscription.update_author_id(author_id):
+    if new_subscription.update_username(user.username) and new_subscription.update_author_id(author_id):
         try:
             db.session.add(new_subscription)
             db.session.commit()

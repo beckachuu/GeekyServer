@@ -38,7 +38,7 @@ class Bookmark(db.Model):
         return False
 
     def update_content(self, new_content):
-        if self.content != new_content:
+        if self.content != new_content and is_valid_text(new_content):
             self.content = new_content
             return True
         return False

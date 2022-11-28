@@ -8,8 +8,7 @@ class Notifications(db.Model):
     trigger_source = db.Column(db.String)
     username = db.Column(db.String, db.ForeignKey('users.username'))
 
-    def __init__(self, noti_id, noti_text, noti_date, trigger_source, username):
-        self.noti_id = noti_id
+    def __init__(self, noti_text, noti_date, trigger_source, username):
         self.noti_text = noti_text
         self.noti_date = noti_date
         self.trigger_source = trigger_source

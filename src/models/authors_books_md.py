@@ -11,7 +11,7 @@ class BooksAuthors(db.Model):
         self.book_id = None
 
     @staticmethod
-    def add_books_authors(book_id, author_ids):
+    def add_authors(book_id, author_ids):
         if not isinstance(author_ids, list):
             return False
 
@@ -27,7 +27,7 @@ class BooksAuthors(db.Model):
         return True
 
     @staticmethod
-    def update_books_authors(book_id, author_ids):
+    def update_authors(book_id, author_ids):
         if not isinstance(author_ids, list):
             return False
 
@@ -42,4 +42,4 @@ class BooksAuthors(db.Model):
         if current_authors == author_ids:
             return False
 
-        return BooksAuthors.add_books_authors(book_id, author_ids)
+        return BooksAuthors.add_authors(book_id, author_ids)

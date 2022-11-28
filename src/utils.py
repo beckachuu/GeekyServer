@@ -75,6 +75,12 @@ def is_valid_datetime(datetime_str):
         return False
 
 
+def is_valid_text(text):
+    if isinstance(text, str) and len(text) < MAX_TEXT_LENGTH:
+        return True
+    return False
+
+
 def random_string(length=None):
     if length is None:
         length = random.randint(5, 20)

@@ -1,4 +1,5 @@
 from init_app import db
+from src.utils import is_valid_text
 
 
 class AuthorsQuotes(db.Model):
@@ -19,7 +20,7 @@ class AuthorsQuotes(db.Model):
         }
 
     def update_quote(self, new_quote):
-        if self.quote != new_quote:
+        if self.quote != new_quote and is_valid_text(new_quote):
             self.quote = new_quote
             return True
         return False

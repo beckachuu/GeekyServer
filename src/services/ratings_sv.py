@@ -1,8 +1,7 @@
-import sqlalchemy as sql
-
 from init_app import db
-from src.models.ratings_md import Ratings
 from src.const import *
+from src.controller.auth import get_current_user
+from src.models.ratings_md import Ratings
 
 
 def get_ratings_by_stars(book_id, stars):
@@ -32,8 +31,9 @@ def get_ratings_by_stars(book_id, stars):
     return result
 
 
-def get_user_ratings(username):
-    ratings = Ratings.query.filter_by(username=username)
+def get_own_ratings():
+    user = get_current_user()
+    ratings = Ratings.query.filter_by(username=user.username)
     result = []
     for rating in ratings:
         result.append(rating.get_json())
@@ -42,6 +42,28 @@ def get_user_ratings(username):
     return None, NOT_FOUND
 
 
-def post_user_rating(username, rating_json):
-    rating = Ratings()
-    valid = False
+def post_rating(json):
+    user = get_current_user()
+    rating = Ratings(user.username)
+    if rating.update_book_id(json[BOOK_ID]) and rating.update_content(json[CONTENT]) and rating.update_stars(json['stars']):
+        try:
+            db.session.add(rating)
+            db.session.commit()
+            return OK_STATUS
+        except:
+            return CONFLICT
+    return BAD_REQUEST
+
+
+def edit_rating(json):
+    user = get_current_user()
+
+    try:
+        rating = Ratings.query.filter_by(
+            username=user.username, book_id=json[BOOK_ID]).first()
+        if rating.update_content(json[CONTENT]) or rating.update_stars(json['stars']):
+            db.session.commit()
+            return OK_STATUS
+        return NO_CONTENT
+    except:
+        return BAD_REQUEST

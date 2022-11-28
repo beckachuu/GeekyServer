@@ -85,7 +85,7 @@ def add_book(json):
         db.session.commit()
 
         Genres.add_genres(book.book_id, json[GENRES])
-        BooksAuthors.add_books_authors(book.book_id, json[AUTHORS])
+        BooksAuthors.add_authors(book.book_id, json[AUTHORS])
 
         return book.get_detail_json(), OK_STATUS
 
@@ -114,7 +114,7 @@ def edit_book_info(json):
         updated = True
     if Genres.update_genres(book.book_id, json[GENRES]):
         updated = True
-    if BooksAuthors.update_books_authors(book.book_id, json[AUTHORS]):
+    if BooksAuthors.update_authors(book.book_id, json[AUTHORS]):
         updated = True
 
     if updated:

@@ -9,7 +9,7 @@ from src.controller.auth import login_required
 
 
 @login_required()
-def create_collection():
+def create_collection(coll_name):
     pass
 
 
@@ -24,5 +24,5 @@ def edit_collection_name(new_name):
 
 
 @login_required()
-def remove_book_from_collection(book_id):
+def remove_book_from_collection(coll_name, book_id):
     pass

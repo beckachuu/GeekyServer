@@ -60,7 +60,8 @@ GENRE_MAX_LENGTH = 40
 COLL_NAME_MAX_LENGTH = 50
 IMAGE_FORMATS = ("image/png", "image/jpeg", "image/jpg")
 
-# constraints for queries
+# constraints
 MIN_LEV_DIFF_PERCENT = 0.5
 MAX_RESULT_COUNT = 20
 MAX_ID = 2147483647
+MAX_TEXT_LENGTH = 65535

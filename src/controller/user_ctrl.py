@@ -1,9 +1,8 @@
 from flask import request
 from flask_restful import Resource
 
-from init_app import db
 from src.const import *
-from src.controller.auth import admin_only, get_current_user, login_required
+from src.controller.auth import admin_only, login_required
 from src.services.ratings_sv import *
 from src.services.users_sv import *
 from src.utils import *
@@ -12,8 +11,7 @@ from src.utils import *
 class MyAccount(Resource):
     @login_required()
     def get(self):
-        user = get_current_user()
-        result, status = get_own_account(user.username)
+        result, status = get_own_account()
 
         if status == OK_STATUS:
             return result, OK_STATUS
@@ -37,8 +35,6 @@ class MyAccount(Resource):
             return {MESSAGE: "Your profile is updated"}, OK_STATUS
         elif status == NO_CONTENT:
             return {MESSAGE: "Your profile is the same. Please recheck your input"}, OK_STATUS
-        elif status == NOT_FOUND:
-            return {MESSAGE: "Account not found"}, NOT_FOUND
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
@@ -73,9 +69,9 @@ class ChangeRole(Resource):
 class MyRatings(Resource):
     @login_required()
     def get(self):
-        user = get_current_user()
 
-        result, status = get_user_ratings(user.username)
+        result, status = get_own_ratings()
+
         if status == OK_STATUS:
             return result, OK_STATUS
         elif status == NOT_FOUND:
@@ -84,14 +80,30 @@ class MyRatings(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def post(self, rating_json):
-        user = get_current_user()
+    def post(self):
+        rating_json = request.get_json()
+        status = post_rating(rating_json)
 
-        result, status = post_user_rating(user.username, rating_json)
         if status == OK_STATUS:
-            return result, OK_STATUS
-        elif status == NOT_FOUND:
-            return {MESSAGE: "Can't post your rating"}, NOT_FOUND
+            return {MESSAGE: "Thank you for your opinion."}, OK_STATUS
+        elif status == CONFLICT:
+            return {MESSAGE: "You already left a rating for this book"}, CONFLICT
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "Please provide valid stars and content for your rating."}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+    @login_required()
+    def put(self):
+        rating_json = request.get_json()
+        status = edit_rating(rating_json)
+
+        if status == OK_STATUS:
+            return {MESSAGE: "Your rating is updated"}, OK_STATUS
+        elif status == NO_CONTENT:
+            return {MESSAGE: "Your rating doesn't have any changes"}
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "Please provide valid stars and content for your rating."}, BAD_REQUEST
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
@@ -99,10 +111,9 @@ class MyRatings(Resource):
 class Subscribe(Resource):
     @login_required()
     def post(self):
-        user = get_current_user()
-        username = user.username
+
         author_id = request.args.get(AUTHOR_ID)
-        status = subscribe_to_author(username, author_id)
+        status = subscribe_to_author(author_id)
         if status == OK_STATUS:
             return {MESSAGE: "Thank you for your subscription!"}, OK_STATUS
         elif status == BAD_REQUEST:
@@ -125,5 +136,7 @@ class BanUser(Resource):
             return {MESSAGE: "This user is banned."}, OK_STATUS
         elif status == BAD_REQUEST:
             return {MESSAGE: "Please check the date you want this user to be unbanned"}, BAD_REQUEST
+        elif status == NOT_FOUND:
+            return {MESSAGE: "User not found"}, NOT_FOUND
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS

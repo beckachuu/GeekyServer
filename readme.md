@@ -17,8 +17,17 @@
     "phone": string,
     "profile_pic": string,
     "theme": int }
+
 - DELETE /my_account
 - GET /my_ratings
+- POST /my_ratings
+> JSON structure:
+  { "book_id": int (mandatory),
+    "stars": int (mandatory),
+    "content": string }
+- PUT /my_ratings : edit rating
+> JSON structure: same as above
+
 - POST /subscribe?author_id=<int>
 - POST /change_role?username=<string>&user_role=<int> (0: normal user, 1: admin)
 - POST /ban_user?username=<string>&restrict_due=<datetime> (restrict_due format: Year-Month-Day Hour:Minute:Second)

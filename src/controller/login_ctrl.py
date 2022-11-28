@@ -1,5 +1,3 @@
-import time
-
 import google.auth.transport.requests
 import requests
 from flask import redirect, request
@@ -8,15 +6,15 @@ from flask_restful import Resource
 from google.oauth2 import id_token
 from pip._vendor import cachecontrol
 
-from init_app import db
 from config.config import GOOGLE_CLIENT_ID, flow
+from init_app import db
 from src.const import *
 from src.controller.auth import remove_current_state
 from src.models.states_md import States
 from src.models.users_md import Users
+from src.services.ratings_sv import *
 from src.services.users_sv import *
 from src.utils import *
-from src.services.ratings_sv import *
 
 
 class Login(Resource):
