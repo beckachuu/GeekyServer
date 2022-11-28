@@ -1,6 +1,6 @@
 from init_app import db
 from src.const import *
-from src.controller.auth import get_current_user
+from src.controller.auth import admin_only, get_current_user
 from src.models.ratings_md import Ratings
 
 
@@ -42,7 +42,7 @@ def get_own_ratings():
     return None, NOT_FOUND
 
 
-def post_rating(json):
+def post_my_rating(json):
     user = get_current_user()
     rating = Ratings(user.username)
     if rating.update_book_id(json[BOOK_ID]) and rating.update_content(json[CONTENT]) and rating.update_stars(json['stars']):
@@ -55,7 +55,7 @@ def post_rating(json):
     return BAD_REQUEST
 
 
-def edit_rating(json):
+def edit_my_rating(json):
     user = get_current_user()
 
     try:
@@ -67,3 +67,8 @@ def edit_rating(json):
         return NO_CONTENT
     except:
         return BAD_REQUEST
+
+
+@admin_only()
+def remove_rating():
+    pass

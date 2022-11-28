@@ -1,18 +1,15 @@
 import sqlalchemy
-from flask import request
-from sqlalchemy import delete
+
 
 from init_app import db
 from src.const import *
 from src.const import EMAIL
-from src.controller.auth import admin_only, login_required, remove_current_state, get_current_user
+from src.controller.auth import get_current_user, login_required, remove_current_state
 from src.models.bookmarks_md import Bookmark
 from src.models.collections_md import Collections
 from src.models.noti_md import Notifications
 from src.models.ratings_md import Ratings
 from src.models.subscription_md import Subscription
-from src.models.users_md import Users
-from src.utils import equal
 
 
 def get_own_account():
@@ -92,45 +89,4 @@ def get_my_noti():
 
 @login_required()
 def change_noti_pref(noti_pref):
-    pass
-
-
-@admin_only()
-def get_user_list():
-    pass
-
-
-def change_user_role(username, new_role):
-    user = Users.query.filter_by(username=username).first()
-
-    if user is None:
-        return NOT_FOUND
-
-    if equal(user.user_role, new_role):
-        return CONFLICT
-
-    if new_role == ADMIN or new_role == MUGGLE_USER:
-        user.user_role = new_role
-        db.session.commit()
-        return OK_STATUS
-    return BAD_REQUEST
-
-
-def ban_user(username, restrict_due):
-    user = Users.query.filter_by(username=username).first()
-    if user is None:
-        return NOT_FOUND
-
-    if user.update_restrict_due(restrict_due):
-        db.session.commit()
-        return OK_STATUS
-    return BAD_REQUEST
-
-
-def remove_user(username):
-    pass
-
-
-@admin_only()
-def remove_rating():
     pass

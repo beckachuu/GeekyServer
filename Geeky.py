@@ -3,6 +3,7 @@ import os
 from flask_restful import Api
 
 from init_app import app
+from src.controller.admin_ctrl import *
 from src.controller.authors_ctrl import *
 from src.controller.books_ctrl import *
 from src.controller.login_ctrl import *
@@ -20,6 +21,7 @@ api.add_resource(Logout, '/logout')
 
 
 api.add_resource(MyAccount, '/my_account')
+api.add_resource(MyNoti, '/my_noti')
 api.add_resource(MyRatings, '/my_ratings')
 api.add_resource(Subscribe, '/subscribe')
 api.add_resource(ChangeRole, '/change_role')
