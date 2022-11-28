@@ -1,44 +1,48 @@
 import sqlalchemy
 from flask import request
+from sqlalchemy import delete
 
 from init_app import db
 from src.const import *
 from src.const import EMAIL
-from src.controller.auth import admin_only, login_required
+from src.controller.auth import admin_only, login_required, remove_current_state, get_current_user
+from src.models.bookmarks_md import Bookmark
+from src.models.collections_md import Collections
+from src.models.noti_md import Notifications
 from src.models.ratings_md import Ratings
 from src.models.subscription_md import Subscription
 from src.models.users_md import Users
 from src.utils import equal
 
 
-@login_required()
-def get_own_account():
+def get_own_account(username):
     cookies_state = request.cookies.get(STATE)
     user = Users.query.filter_by(login_state=cookies_state).first()
-    return user
+    if user is None:
+        return None, NOT_FOUND
+    return user.get_json(), OK_STATUS
 
 
-@login_required()
-def edit_own_account(username=None, name=None, phone=None, profile_pic=None, theme_preference=None):
-    account = get_own_account()
+def edit_own_account(username, name, phone, profile_pic, theme_preference):
+    user = get_current_user()
     updated = False
 
-    if account is None:
+    if user is None:
         return None, NOT_FOUND
 
-    if account.update_username(username):
+    if user.update_username(username):
         updated = True
 
-    if account.update_name(name):
+    if user.update_name(name):
         updated = True
 
-    if account.update_phone(phone):
+    if user.update_phone(phone):
         updated = True
 
-    if account.update_profile_pic(profile_pic):
+    if user.update_profile_pic(profile_pic):
         updated = True
 
-    if account.update_theme_preference(theme_preference):
+    if user.update_theme_preference(theme_preference):
         updated = True
 
     if updated:
@@ -49,9 +53,22 @@ def edit_own_account(username=None, name=None, phone=None, profile_pic=None, the
 
 
 def remove_own_account():
-    user = get_own_account()
+    user = get_current_user()
     try:
+        username = user.username
+
+        all_noti = Notifications.query.filter_by(username=username).all()
+        all_subs = Subscription.query.filter_by(username=username).all()
+        all_bookmark = Bookmark.query.filter_by(username=username).all()
+        all_rating = Ratings.query.filter_by(username=username).all()
+
+        to_delete = all_noti+all_bookmark+all_rating+all_subs
+        for obj in to_delete:
+            db.session.delete(obj)
+
         db.session.delete(user)
+        remove_current_state()
+
         db.session.commit()
         return OK_STATUS
     except:

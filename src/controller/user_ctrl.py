@@ -12,11 +12,13 @@ from src.utils import *
 class MyAccount(Resource):
     @login_required()
     def get(self):
-        account = get_own_account()
-        if account is not None:
-            return account.get_json(), OK_STATUS
+        user = get_current_user()
+        result, status = get_own_account(user.username)
+
+        if status == OK_STATUS:
+            return result, OK_STATUS
         else:
-            return {MESSAGE: "Account not found"}, NOT_FOUND
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
     def post(self):
@@ -42,7 +44,8 @@ class MyAccount(Resource):
 
     @login_required()
     def delete(self):
-        if remove_own_account():
+        status = remove_own_account()
+        if status == OK_STATUS:
             return {MESSAGE: "Your account is deleted."}, OK_STATUS
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
