@@ -35,10 +35,6 @@ PROFILE_PIC = 'profile_pic'
 THEME = 'theme_preference'
 # author
 AUTHOR_ID = 'author_id'
-AUTHOR_NAME = 'author_name'
-BIO = 'bio'
-SOCIAL_ACCOUNT = 'social_account'
-WEBSITE = 'website'
 # book
 BOOK_ID = 'book_id'
 TITLE = 'title'

@@ -64,4 +64,6 @@ def remove_current_state():
 def get_current_user():
     cookies_state = request.cookies.get(STATE)
     user = Users.query.filter_by(login_state=cookies_state).first()
+    if user is None:
+        return redirect("/login")
     return user

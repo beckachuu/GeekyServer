@@ -1,4 +1,5 @@
 from init_app import db
+from src.controller.auth import get_current_user
 from src.models.books_md import Books
 from src.utils import *
 
@@ -8,10 +9,10 @@ class Collections(db.Model):
     coll_name = db.Column(db.String(50), primary_key=True)
     book_id = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, username, coll_name, book_id):
+    def __init__(self, username):
         self.username = username
-        self.coll_name = coll_name
-        self.book_id = book_id
+        self.coll_name = None
+        self.book_id = None
 
     @staticmethod
     def get_json(username, coll_name):
@@ -31,15 +32,16 @@ class Collections(db.Model):
         }
 
     @staticmethod
-    def update_coll_name(username, coll_name, new_coll_name):
-        if is_valid_name(new_coll_name):
+    def update_coll_name(coll_name, new_coll_name):
+        user = get_current_user()
+        if is_valid_name(new_coll_name, COLL_NAME_MAX_LENGTH):
 
-            collections_query = Collections.query.filter_by(
-                username=username, coll_name=coll_name)
-            if collections_query.first().coll_name == new_coll_name:
+            collections = Collections.query.filter_by(
+                username=user.username, coll_name=coll_name)
+            if collections.first().coll_name == new_coll_name:
                 return False
 
-            for collection in collections_query:
+            for collection in collections:
                 collection.coll_name = new_coll_name
             return True
 

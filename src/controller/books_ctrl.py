@@ -4,12 +4,13 @@ from flask_restful import Resource
 from src.const import *
 from src.controller.auth import get_current_user
 from src.services.books_sv import *
+from src.services.collections_sv import add_book_to_collection
 
 
 class MainPage(Resource):
     def get(self):
         user = get_current_user()
-        result, _ = get_general_recommendation()
+        result, status = get_general_recommendation()
         if user is not None:
             result.append(get_personal_recommendation(user.username))
         return result, OK_STATUS
@@ -24,8 +25,10 @@ class BooksSearch(Resource):
 
         if status1 == OK_STATUS or status2 == OK_STATUS:
             return result_by_name + result_by_author, OK_STATUS
-        else:
+        elif status1 == NOT_FOUND and status2 == NOT_FOUND:
             return {MESSAGE: "No book found"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class BookDetail(Resource):
@@ -36,7 +39,25 @@ class BookDetail(Resource):
 
         if status == OK_STATUS:
             return result, OK_STATUS
-        return {MESSAGE: "No book found"}, NOT_FOUND
+        elif status == NOT_FOUND:
+            return {MESSAGE: "No book found"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+    @login_required()
+    def patch(self):
+        coll_name = request.args.get("coll_name")
+        book_id = request.args.get(BOOK_ID)
+
+        status = add_book_to_collection(coll_name, book_id)
+        if status == OK_STATUS:
+            return {MESSAGE: "Yay, book is added to your collection!"}, OK_STATUS
+        elif status == NOT_FOUND:
+            return {MESSAGE: "No book or collection found"}, NOT_FOUND
+        elif status == BAD_REQUEST:
+            return {MESSAGE: "Please provide valid info for the request"}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @admin_only()
     def post(self):
@@ -45,8 +66,10 @@ class BookDetail(Resource):
 
         if status == OK_STATUS:
             return result, OK_STATUS
-        else:
+        elif status == BAD_REQUEST:
             return {MESSAGE: "Please provide valid info for the book"}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @admin_only()
     def put(self):
@@ -55,5 +78,18 @@ class BookDetail(Resource):
 
         if status == OK_STATUS:
             return result, OK_STATUS
-        else:
+        elif status == BAD_REQUEST:
             return {MESSAGE: "Book info isn't changed, please make sure that you provided new and valid info for the book."}, BAD_REQUEST
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+    @admin_only()
+    def delete(self):
+        book_id = request.args.get(BOOK_ID)
+        status = remove_book(book_id)
+        if status == OK_STATUS:
+            return {MESSAGE: "Book is removed."}, OK_STATUS
+        elif status == NOT_FOUND:
+            return {MESSAGE: "Can't remove the book you provided (it doesn't exists)"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS

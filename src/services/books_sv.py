@@ -127,11 +127,25 @@ def edit_book_info(json):
     return None, BAD_REQUEST
 
 
-@ admin_only()
-def remove_book():
+def remove_book(book_id):
+    book = Books.query.filter_by(book_id=book_id).first()
+    if book is None:
+        return NOT_FOUND
+    try:
+        db.session.delete(book)
+        db.session.commit()
+        return OK_STATUS
+    except:
+        return SERVER_ERROR
+
+
+def add_bookmark():
     pass
 
 
-@login_required()
-def add_bookmark():
+def edit_bookmark():
+    pass
+
+
+def delete_bookmark():
     pass

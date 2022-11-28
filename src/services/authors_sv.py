@@ -25,11 +25,11 @@ def get_info(author_id):
 def add_author(author_info):
     new_author = Authors()
 
-    if new_author.update_author_name(author_info[AUTHOR_NAME]):
-        new_author.update_bio(author_info[BIO])
+    if new_author.update_author_name(author_info["author_name"]):
+        new_author.update_bio(author_info["bio"])
         new_author.update_profile_pic(author_info[PROFILE_PIC])
-        new_author.update_social_account(author_info[SOCIAL_ACCOUNT])
-        new_author.update_website(author_info[WEBSITE])
+        new_author.update_social_account(author_info["social_account"])
+        new_author.update_website(author_info["website"])
 
         db.session.add(new_author)
         db.session.commit()
