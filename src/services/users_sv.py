@@ -1,10 +1,10 @@
 import sqlalchemy
 
-
 from init_app import db
 from src.const import *
 from src.const import EMAIL
-from src.controller.auth import get_current_user, login_required, remove_current_state
+from src.controller.auth import (get_current_user, login_required,
+                                 remove_current_state)
 from src.models.bookmarks_md import Bookmark
 from src.models.collections_md import Collections
 from src.models.noti_md import Notifications
@@ -82,11 +82,16 @@ def subscribe_to_author(author_id):
     return BAD_REQUEST
 
 
-@login_required()
 def get_my_noti():
-    pass
+    user = get_current_user()
+    all_noti = Notifications.query.filter_by(username=user.username)
+    result = []
+    for noti in all_noti:
+        result.append(noti.get_json())
+    if len(result) == 0:
+        return None, NO_CONTENT
+    return result, OK_STATUS
 
-
-@login_required()
-def change_noti_pref(noti_pref):
-    pass
+# @login_required()
+# def change_noti_pref(noti_pref):
+#     pass

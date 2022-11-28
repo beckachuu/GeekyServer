@@ -24,5 +24,10 @@ def edit_collection_name(new_name):
 
 
 @login_required()
+def add_book_to_collection():
+    pass
+
+
+@login_required()
 def remove_book_from_collection(coll_name, book_id):
     pass

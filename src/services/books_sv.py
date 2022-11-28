@@ -5,6 +5,7 @@ from src.models.authors_books_md import BooksAuthors
 from src.models.authors_md import Authors
 from src.models.books_md import Books
 from src.models.genres_md import Genres
+from src.services.noti_sv import *
 from src.services.ratings_sv import get_ratings_by_stars
 from src.utils import is_similar
 
@@ -25,7 +26,7 @@ def get_recent_updated(limit=MAX_RESULT_COUNT):
     pass
 
 
-def get_personal_recommendation(user, limit=MAX_RESULT_COUNT):
+def get_personal_recommendation(username, limit=MAX_RESULT_COUNT):
     # by user ratings, subscription, bookmarks, collections
     # TODO
     return None
@@ -86,6 +87,7 @@ def add_book(json):
 
         Genres.add_genres(book.book_id, json[GENRES])
         BooksAuthors.add_authors(book.book_id, json[AUTHORS])
+        notify_authors_new_book(json[AUTHORS], book.book_id)
 
         return book.get_detail_json(), OK_STATUS
 
@@ -119,6 +121,7 @@ def edit_book_info(json):
 
     if updated:
         db.session.commit()
+        notify_book_update(book.book_id)
         return book.get_detail_json(), OK_STATUS
 
     return None, BAD_REQUEST
@@ -130,15 +133,5 @@ def remove_book():
 
 
 @login_required()
-def add_to_collection():
-    pass
-
-
-@login_required()
 def add_bookmark():
-    pass
-
-
-@login_required()
-def add_note():
     pass

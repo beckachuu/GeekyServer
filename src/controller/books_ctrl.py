@@ -11,7 +11,7 @@ class MainPage(Resource):
         user = get_current_user()
         result, _ = get_general_recommendation()
         if user is not None:
-            result.append(get_personal_recommendation(user))
+            result.append(get_personal_recommendation(user.username))
         return result, OK_STATUS
 
 

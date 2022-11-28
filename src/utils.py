@@ -68,7 +68,7 @@ def is_valid_id(id_num):
 def is_valid_datetime(datetime_str):
     today = datetime.today()
     try:
-        datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')
+        datetime_obj = datetime.strptime(datetime_str, DATETIME_FORMAT)
         if datetime_obj > today:
             return True
     except:

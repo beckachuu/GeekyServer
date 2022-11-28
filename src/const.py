@@ -1,3 +1,4 @@
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # general keys
 EMAIL = 'email'

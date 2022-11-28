@@ -30,8 +30,9 @@ Database diagram:
     "content": string }
 - PUT /my_ratings : edit rating
 > JSON structure: same as above
-
+- GET /my_notification
 - POST /subscribe?author_id=<int>
+
 - POST /change_role?username=<string>&user_role=<int> (0: normal user, 1: admin)
 - POST /ban_user?username=<string>&restrict_due=<datetime> (restrict_due format: Year-Month-Day Hour:Minute:Second)
 ---

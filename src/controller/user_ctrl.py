@@ -49,7 +49,13 @@ class MyAccount(Resource):
 class MyNoti(Resource):
     @login_required()
     def get(self):
-        pass
+        result, status = get_my_noti()
+        if status == OK_STATUS:
+            return result, OK_STATUS
+        elif status == NO_CONTENT:
+            return {MESSAGE: "You don't have any news, go follow some authors, put some books into your collection"}, OK_STATUS
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class MyRatings(Resource):
