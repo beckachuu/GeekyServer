@@ -1,14 +1,21 @@
+## Installation
+```sh
+git clone https://github.com/beckachuu/temp-backend.git
+cd temp-backend
+pip install -r requirements.txt
+python Geeky.py
+```
 ### Port: 5000
 
 ---
 
-Database diagram:
+## Database diagram:
 
 ![db_diagram](https://user-images.githubusercontent.com/78261243/204224617-d6a3726a-2421-40bf-8246-d8ccf496d670.png)
 
 ---
 
-### URLs:
+## URLs:
 (Fields that aren't mandatory: still need to be included, values can be set to null)
 
 - GET /login
@@ -16,7 +23,7 @@ Database diagram:
 
 ---
 
-#### Account APIs
+### Account APIs
 - GET /my_account
 - POST /my_account
 > JSON structure:
@@ -29,7 +36,9 @@ Database diagram:
 - DELETE /my_account
 - GET /my_notification
 
-#### Ratings APIs
+---
+
+### Ratings APIs
 - GET /my_ratings
 - POST /my_ratings
 > JSON structure:
@@ -39,20 +48,24 @@ Database diagram:
 - PUT /my_ratings : edit rating
 > JSON structure: same as above
 
-#### Collections APIs (NOT TESTED lol sorry my back hurts so bad at this point...)
+---
+
+### Collections APIs (NOT TESTED lol sorry my back hurts so bad at this point...)
 - POST /my_collections/<string:collname>
 - PATCH /my_collections/<string:collname>?new_name=<string> : rename collection
 - PATCH /books?book_id=<int>&coll_name=<string> : add book to collection
 - PUT /my_collections/<string:collname>?book_id=<string> : remove book from collection
 - DELETE /my_collections/<string:collname>
 
-#### Admin APIs
+---
+
+### Admin APIs
 - POST /change_role?username=<string>&user_role=<int> (0: normal user, 1: admin)
 - POST /ban_user?username=<string>&restrict_due=<datetime> (restrict_due format: Year-Month-Day Hour:Minute:Second)
 
 ---
 
-#### Books APIs
+### Books APIs
 - GET / : main page (not finished)
 - GET /books/search?query=<string> : search books by authors or books name
 - GET /books?book_id=<int> : get detail info of a book
