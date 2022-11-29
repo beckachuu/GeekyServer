@@ -10,7 +10,7 @@ flow = Flow.from_client_secrets_file(  # Flow is OAuth 2.0 a class that stores a
     # here we are specifing what do we get after the authorization
     scopes=["https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://127.0.0.1:5000/callback"
+    redirect_uri="http://w22g7.int3306.freeddns.org/callback"
 )
 
 USE_CREDENTIALS = True
@@ -20,9 +20,6 @@ USE_CREDENTIALS = True
 # For phpmyadmin:
 SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
 
-SESSION_TYPE = 'filesystem'
-SESSION_PERMANENT = True
-# PERMANENT_SESSION_LIFETIME = timedelta(hours=5)
 
 SECRET_KEY = 'justasimplesecretkeyhere'
 GOOGLE_CLIENT_ID = "482973633382-tbr5icbjn9f895loe0a0iv7sgvsm0948.apps.googleusercontent.com"
