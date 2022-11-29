@@ -1,7 +1,6 @@
 from init_app import db
 from src.const import *
 from src.utils import is_valid_name, is_url_image
-import validators as val
 
 
 class Authors(db.Model):
