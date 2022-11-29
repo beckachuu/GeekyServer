@@ -1,6 +1,4 @@
 from init_app import db
-from src.controller.auth import get_current_user
-from src.models.books_md import Books
 from src.utils import *
 
 
@@ -32,12 +30,11 @@ class Collections(db.Model):
         }
 
     @staticmethod
-    def update_coll_name(coll_name, new_coll_name):
-        user = get_current_user()
+    def update_coll_name(username, coll_name, new_coll_name):
         if is_valid_name(new_coll_name, COLL_NAME_MAX_LENGTH):
 
             collections = Collections.query.filter_by(
-                username=user.username, coll_name=coll_name)
+                username=username, coll_name=coll_name)
             if collections.first().coll_name == new_coll_name:
                 return False
 

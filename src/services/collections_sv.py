@@ -22,7 +22,7 @@ def edit_collection_name(coll_name, new_name):
     try:
         collections = Collections.query.filter_by(
             username=user.username, coll_name=coll_name)
-        if collections and Collections.update_coll_name(coll_name, new_name):
+        if collections and Collections.update_coll_name(user.username, coll_name, new_name):
             for collection in collections:
                 collection.coll_name = coll_name
             db.session.commit()
