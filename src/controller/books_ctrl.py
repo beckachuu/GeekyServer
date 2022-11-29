@@ -12,7 +12,9 @@ class MainPage(Resource):
         user = get_current_user()
         result, status = get_general_recommendation()
         if user and result:
-            result.append(get_personal_recommendation(user.username))
+            result2 = get_personal_recommendation(user.username)
+            if result2:
+                result.append(result2)
         return result, OK_STATUS
 
 

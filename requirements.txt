@@ -3,7 +3,4 @@ Flask_Cors
 Flask_RESTful
 flask_sqlalchemy
 google_auth_oauthlib
-
-requests
-SQLAlchemy
 flask-mysqldb

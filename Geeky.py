@@ -42,4 +42,4 @@ api.add_resource(AuthorInfo, '/authors/')
 if __name__ == '__main__':
     from src.utils import *
 
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
