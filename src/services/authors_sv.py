@@ -1,7 +1,8 @@
 from init_app import db
-from src.models.authors_md import Authors
-from src.utils import is_similar
 from src.const import *
+from src.models.authors_md import Authors
+from src.models.subscription_md import Subscription
+from src.utils import is_similar
 
 
 def search_by_name(query):
@@ -15,11 +16,21 @@ def search_by_name(query):
     return result, OK_STATUS
 
 
+def get_follower_list(author_id):
+    subs = Subscription.query.filter_by(author_id=author_id)
+    followers = []
+    for sub in subs:
+        followers.append(sub.username)
+
+
 def get_info(author_id):
     author = Authors.query.get(author_id)
     if author is None:
         return None, NOT_FOUND
-    return author.get_json(), OK_STATUS
+
+    result = author.get_json()
+    result["followers"] = get_follower_list(author_id)
+    return result, OK_STATUS
 
 
 def add_author(author_info):

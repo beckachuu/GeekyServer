@@ -22,18 +22,13 @@ class Authors(db.Model):
         self.website = None
 
     def get_json(self):
-        subs = Subscription.query.filter_by(author_id=self.author_id)
-        followers = []
-        for sub in subs:
-            followers.append(sub.username)
         return {
             'author_id': self.author_id,
             'author_name': self.author_name,
             'profile_pic': self.profile_pic,
             'bio': self.bio,
             'social_account': self.social_account,
-            'website': self.website,
-            'follwers': followers
+            'website': self.website
         }
 
     def update_author_name(self, new_author_name):
