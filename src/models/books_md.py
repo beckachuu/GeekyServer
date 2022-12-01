@@ -55,6 +55,7 @@ class Books(db.Model):
             'authors': authors,
             'current_rating': self.current_rating,
             'genre': genres,
+            'cover': self.cover
         }
 
     def get_detail_json(self):
@@ -75,7 +76,9 @@ class Books(db.Model):
             'public_year': self.public_year,
             'republish_count': self.republish_count,
             'descript': self.descript,
-            'content': self.content
+            'content': self.content,
+            'cover': self.cover
+
         }
 
     def update_title(self, new_title):

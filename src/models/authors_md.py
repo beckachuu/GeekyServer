@@ -1,6 +1,9 @@
+import validators as val
+
 from init_app import db
 from src.const import *
-from src.utils import is_valid_name, is_url_image
+from src.models.subscription_md import Subscription
+from src.utils import is_url_image, is_valid_name
 
 
 class Authors(db.Model):
@@ -19,6 +22,10 @@ class Authors(db.Model):
         self.website = None
 
     def get_json(self):
+        subs = Subscription.query.filter_by(author_id=self.author_id)
+        followers = []
+        for sub in subs:
+            followers.append(sub.username)
         return {
             'author_id': self.author_id,
             'author_name': self.author_name,
@@ -26,6 +33,7 @@ class Authors(db.Model):
             'bio': self.bio,
             'social_account': self.social_account,
             'website': self.website,
+            'follwers': followers
         }
 
     def update_author_name(self, new_author_name):
