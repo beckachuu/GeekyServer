@@ -17,8 +17,8 @@ def get_general_recommendation(limit=MAX_RESULT_COUNT):
     for book in all_books:
         result.append(book.get_summary_json())
     if len(result) == 0:
-        return None, NOT_FOUND
-    return result, OK_STATUS
+        return None
+    return result
 
 
 def get_recent_updated(limit=MAX_RESULT_COUNT):

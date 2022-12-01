@@ -1,6 +1,7 @@
 from init_app import db
 from src.const import *
 from src.models.authors_md import Authors
+from src.models.quotes_md import AuthorsQuotes
 from src.models.subscription_md import Subscription
 from src.utils import is_similar
 
@@ -30,6 +31,8 @@ def get_info(author_id):
 
     result = author.get_json()
     result["followers"] = get_follower_list(author_id)
+    quote = AuthorsQuotes.query(author_id=author_id)
+    result["quote"] = quote.get()
     return result, OK_STATUS
 
 
@@ -43,6 +46,13 @@ def add_author(author_info):
         new_author.update_website(author_info["website"])
 
         db.session.add(new_author)
+        db.session.commit()
+
+        quote = AuthorsQuotes()
+        quote.update_author_id(new_author.author_id)
+        quote.update_quote(author_info["quote"])
+
+        db.session.add(quote)
         db.session.commit()
 
         return new_author.get_json(), OK_STATUS

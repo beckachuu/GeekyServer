@@ -10,9 +10,9 @@ from src.services.collections_sv import add_book_to_collection
 class MainPage(Resource):
     def get(self):
         user = get_current_user()
-        result, status = get_general_recommendation()
+        result = get_general_recommendation()
         if user and result:
-            result2, status2 = get_personal_recommendation(user.username)
+            result2 = get_personal_recommendation(user.username)
             if result2:
                 result.append(result2)
         return result, OK_STATUS

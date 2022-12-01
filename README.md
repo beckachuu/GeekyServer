@@ -97,5 +97,6 @@ python Geeky.py
     "bio": string,
     "social_account": string,
     "website": string,
-    "profile_pic": string }
+    "profile_pic": string,
+    "quote": string }
 - POST /subscribe?author_id=<int>

@@ -2,7 +2,6 @@ import validators as val
 
 from init_app import db
 from src.const import *
-from src.models.subscription_md import Subscription
 from src.utils import is_url_image, is_valid_name
 
 
