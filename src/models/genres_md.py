@@ -2,6 +2,9 @@ from init_app import db
 from src.utils import is_valid_name
 from src.const import GENRE_MAX_LENGTH
 
+GENRES = ["Phiêu lưu", "Cổ điển", "Tội phạm, trinh thám", "Viễn tưởng",
+          "Cổ tích, truyền thuyết", "Lịch sử", "Kinh dị", "Hài hước"]
+
 
 class Genres(db.Model):
     book_id = db.Column(db.Integer, primary_key=True)
@@ -17,8 +20,10 @@ class Genres(db.Model):
             return False
 
         for genre in new_genres:
-            if not is_valid_name(genre, GENRE_MAX_LENGTH):
+            if genre not in GENRES:
                 return False
+
+        for genre in new_genres:
             new = Genres()
             new.book_id = book_id
             new.genre = genre

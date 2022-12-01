@@ -22,6 +22,8 @@ class Login(Resource):
         authorization_url, state = flow.authorization_url()
         response = redirect(authorization_url)
 
+        remove_current_state()
+
         response.set_cookie(STATE, state)
         db.session.add(States(state))
         db.session.commit()

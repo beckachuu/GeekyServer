@@ -11,13 +11,6 @@ class Authors(db.Model):
     social_account = db.Column(db.String)
     website = db.Column(db.String)
 
-    # def __init__(self, author_name,  profile_pic=None, bio=None, website=None, social_account=None):
-    #     self.author_name = author_name
-    #     self.profile_pic = profile_pic
-    #     self.bio = bio
-    #     self.social_account = social_account
-    #     self.website = website
-
     def __init__(self):
         self.author_name = None
         self.profile_pic = None

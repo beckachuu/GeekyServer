@@ -81,11 +81,15 @@ def is_valid_text(text):
     return False
 
 
-def random_string(length=None):
-    if length is None:
-        length = random.randint(5, 20)
+def random_string(min_length=None, max_length=None):
+    if max_length is None:
+        length = max_length
+    else:
+        if min_length is None:
+            min_length = random.randint(1, max_length)
+        length = random.randint(min_length, max_length)
 
-    return str(''.join(random.choices(string.ascii_uppercase + string.digits, k=length)))
+    return str(''.join(random.choices(string.printable, k=length)))
 
 
 def get_current_datetime():

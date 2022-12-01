@@ -57,8 +57,9 @@ def admin_only():
 def remove_current_state():
     cookies_state = request.cookies.get(STATE)
     state_db = States.query.filter_by(state=cookies_state).first()
-    db.session.delete(state_db)
-    db.session.commit()
+    if state_db:
+        db.session.delete(state_db)
+        db.session.commit()
 
 
 def get_current_user():
