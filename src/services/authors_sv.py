@@ -31,7 +31,7 @@ def get_info(author_id):
 
     result = author.get_json()
     result["followers"] = get_follower_list(author_id)
-    quote = AuthorsQuotes.query(author_id=author_id)
+    quote = AuthorsQuotes.query(author_id=author_id).first()
     result["quote"] = quote.get()
     return result, OK_STATUS
 
