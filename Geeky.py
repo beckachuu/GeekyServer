@@ -8,7 +8,7 @@ from src.controller.authors_ctrl import *
 from src.controller.books_ctrl import *
 from src.controller.login_ctrl import *
 from src.controller.user_ctrl import *
-
+from src.controller.send_gmail import *
 # this is to set our environment to https because OAuth 2.0 only supports https environments
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -19,6 +19,7 @@ api.add_resource(Login, '/login')
 api.add_resource(Callback, '/callback')
 api.add_resource(Logout, '/logout')
 
+api.add_resource(SendGmail, '/send_gmail')
 
 api.add_resource(MyAccount, '/my_account')
 api.add_resource(MyNoti, '/my_notification')
