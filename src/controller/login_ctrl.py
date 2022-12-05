@@ -18,6 +18,7 @@ from src.utils import *
 
 
 class Login(Resource):
+    @cross_origin(supports_credentials=True)
     def get(self):
         authorization_url, state = flow.authorization_url()
         response = redirect(authorization_url)
@@ -33,7 +34,7 @@ class Login(Resource):
 
 
 class Callback(Resource):
-    # @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True)
     def get(self):
         # print("STATE AT BEGINNING OF CALLBACK(): ", request.cookies.get(STATE)) # wrong
 
@@ -41,10 +42,9 @@ class Callback(Resource):
         response = redirect("/my_account")
 
         db_state = States.query.filter_by(
-            state=request.args[STATE]).first().state
-        if not db_state == request.args[STATE]:
-            if db_state:
-                remove_current_state()
+            state=request.args[STATE]).first()
+        if not db_state:
+            # remove_current_state()
             return {"message": "States don't match. You may delete your cookies and retry."}, 500
 
         credentials = flow.credentials
@@ -67,10 +67,10 @@ class Callback(Resource):
             user = Users(email=current_email, profile_pic=id_info.get(PICTURE))
             db.session.add(user)
 
-        user.login_state = db_state
+        user.login_state = request.args[STATE]
         db.session.commit()
 
-        response.set_cookie(STATE, db_state)
+        response.set_cookie(STATE, db_state.state)
         return response
 
 

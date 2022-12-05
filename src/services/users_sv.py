@@ -2,7 +2,6 @@ import sqlalchemy
 
 from init_app import db
 from src.const import *
-from src.const import EMAIL
 from src.controller.auth import (get_current_user, login_required,
                                  remove_current_state)
 from src.models.bookmarks_md import Bookmark
@@ -19,7 +18,14 @@ def get_own_account():
     return user.get_json(), OK_STATUS
 
 
-def edit_own_account(username, name, phone, profile_pic, theme_preference):
+def edit_own_account(new_info):
+    username = new_info[USERNAME]
+    name = new_info[NAME]
+    phone = new_info[PHONE]
+    profile_pic = new_info[PROFILE_PIC]
+    theme_preference = new_info['theme_preference']
+    receive_email = new_info['recieve_email']
+
     user = get_current_user()
     updated = False
 
@@ -36,6 +42,9 @@ def edit_own_account(username, name, phone, profile_pic, theme_preference):
         updated = True
 
     if user.update_theme_preference(theme_preference):
+        updated = True
+
+    if user.update_receive_email(receive_email):
         updated = True
 
     if updated:

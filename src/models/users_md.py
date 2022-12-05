@@ -7,7 +7,7 @@ from src.utils import get_username_from_email
 
 
 class Users(db.Model):
-    username = db.Column(db.String(20), primary_key=True)
+    username = db.Column(db.String(64), primary_key=True)
     email = db.Column(db.String)
     name = db.Column(db.String)
     phone = db.Column(db.String)
@@ -16,6 +16,7 @@ class Users(db.Model):
     login_state = db.Column(db.String)
     user_role = db.Column(db.Integer)
     restrict_due = db.Column(db.DateTime)
+    recieve_email = db.Column(db.Integer)
 
     def __init__(self, email, profile_pic):
         self.username = get_username_from_email(email)
@@ -23,12 +24,14 @@ class Users(db.Model):
         self.profile_pic = profile_pic
         self.theme_preference = 1
         self.user_role = 0
+        self.recieve_email = 1
 
     def get_json(self):
         collections_query = Collections.query.filter_by(username=self.username)
         collection_list = []
         for collection in collections_query:
-            collection_list.append(collection.to_json())
+            collection_list.append(collection.get_json(
+                self.username, collection.coll_name))
 
         return {
             'username': self.username,
@@ -42,7 +45,7 @@ class Users(db.Model):
         }
 
     def update_username(self, new_username):
-        if self.username != new_username and is_valid_username(new_username):
+        if self.username != new_username and is_valid_username(new_username, 64):
             self.username = new_username
             return True
         return False
@@ -75,5 +78,11 @@ class Users(db.Model):
     def update_restrict_due(self, restrict_due):
         if self.restrict_due != restrict_due and is_valid_datetime(restrict_due):
             self.restrict_due = restrict_due
+            return True
+        return False
+
+    def update_receive_email(self, receive_email):
+        if self.recieve_email != receive_email and (receive_email == 0 or receive_email == 1):
+            self.recieve_email = receive_email
             return True
         return False

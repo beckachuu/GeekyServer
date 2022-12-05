@@ -22,14 +22,7 @@ class MyAccount(Resource):
     def post(self):
         new_info = request.get_json()
 
-        username = new_info[USERNAME]
-        name = new_info[NAME]
-        phone = new_info[PHONE]
-        profile_pic = new_info[PROFILE_PIC]
-        theme_preference = new_info[THEME]
-
-        status = edit_own_account(username, name, phone,
-                                  profile_pic, theme_preference)
+        status = edit_own_account(new_info)
 
         if status == OK_STATUS:
             return {MESSAGE: "Your profile is updated"}, OK_STATUS

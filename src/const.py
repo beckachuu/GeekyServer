@@ -32,7 +32,7 @@ USERNAME = 'username'
 USER_ROLE = 'user_role'
 PHONE = 'phone'
 PROFILE_PIC = 'profile_pic'
-THEME = 'theme_preference'
+YES_RECEIVE_EMAIL = 1
 # author
 AUTHOR_ID = 'author_id'
 # book

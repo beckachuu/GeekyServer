@@ -26,7 +26,7 @@ def is_valid_name(str, max_length=NAME_MAX_LENGTH, min_length=0):
         return False
 
 
-def is_valid_username(str, max_length=20, min_length=0):
+def is_valid_username(str, max_length=20, min_length=2):
     if str is None:
         return False
 
