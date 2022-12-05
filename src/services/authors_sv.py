@@ -1,6 +1,8 @@
 from init_app import db
 from src.const import *
 from src.models.authors_md import Authors
+from src.models.books_md import Books
+from src.models.authors_books_md import BooksAuthors
 from src.models.quotes_md import AuthorsQuotes
 from src.models.subscription_md import Subscription
 from src.utils import is_similar
@@ -24,6 +26,15 @@ def get_follower_list(author_id):
         followers.append(sub.username)
 
 
+def get_book_list(author_id):
+    result = []
+    authors_books = BooksAuthors.query.filter_by(author_id=author_id)
+    for author_book in authors_books:
+        book = Books.query.filter_by(book_id=author_book.book_id).first()
+        result.append(book.get_summary_json())
+    return result
+
+
 def get_info(author_id):
     author = Authors.query.get(author_id)
     if author is None:
@@ -31,6 +42,7 @@ def get_info(author_id):
 
     result = author.get_json()
     result["followers"] = get_follower_list(author_id)
+    result["books"] = get_book_list(author_id)
     quote = AuthorsQuotes.query.filter_by(author_id=author_id).first()
     if quote:
         result["quote"] = quote.get()
