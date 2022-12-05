@@ -1,6 +1,7 @@
 from init_app import db
 from src.const import *
 from src.controller.auth import admin_only, get_current_user
+from src.models.books_md import Books
 from src.models.ratings_md import Ratings
 
 
@@ -42,6 +43,15 @@ def get_own_ratings():
     return None, NOT_FOUND
 
 
+def update_current_rating(username, book_id):
+    average = db.session.query(db.func.avg(Ratings.stars)).filter_by(
+        book_id=book_id, username=username)
+
+    book = Books.query.filter_by(book_id=book_id).first()
+    book.current_rating = average
+    db.session.commit()
+
+
 def post_my_rating(json):
     user = get_current_user()
     rating = Ratings(user.username)
@@ -49,6 +59,8 @@ def post_my_rating(json):
         try:
             db.session.add(rating)
             db.session.commit()
+
+            update_current_rating(user.username, json[BOOK_ID])
             return OK_STATUS
         except:
             return CONFLICT
@@ -63,12 +75,14 @@ def edit_my_rating(json):
             username=user.username, book_id=json[BOOK_ID]).first()
         if rating.update_content(json[CONTENT]) or rating.update_stars(json['stars']):
             db.session.commit()
+
+            update_current_rating(user.username, json[BOOK_ID])
             return OK_STATUS
         return NO_CONTENT
     except:
         return BAD_REQUEST
 
 
-@admin_only()
+@ admin_only()
 def remove_rating():
     pass
