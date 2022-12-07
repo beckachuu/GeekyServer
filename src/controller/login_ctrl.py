@@ -1,15 +1,16 @@
+import json
+
 import google.auth.transport.requests
 import requests
 from flask import redirect, request
-from flask_cors import cross_origin
+from flask.wrappers import Response
 from flask_restful import Resource
 from google.oauth2 import id_token
 from pip._vendor import cachecontrol
 
-from config.config import GOOGLE_CLIENT_ID, flow
+from config.config import FRONTEND_URL, GOOGLE_CLIENT_ID, flow
 from init_app import db
 from src.const import *
-from src.controller.auth import remove_current_state
 from src.models.states_md import States
 from src.models.users_md import Users
 from src.services.ratings_sv import *
@@ -18,7 +19,7 @@ from src.utils import *
 
 
 class Login(Resource):
-    @cross_origin(supports_credentials=True)
+    # @cross_origin(supports_credentials=True)
     def get(self):
         authorization_url, state = flow.authorization_url()
         response = redirect(authorization_url)
@@ -30,16 +31,24 @@ class Login(Resource):
         db.session.commit()
         # print("STATE FROM LOGIN(): ", state)  # gud
 
-        return response
+        return Response(
+            response=json.dumps(
+                {'auth_url': authorization_url, 'state': state}),
+            status=200,
+            mimetype='application/json'
+        )
+        # return response
 
 
 class Callback(Resource):
-    @cross_origin(supports_credentials=True)
+    # @cross_origin(supports_credentials=True)
     def get(self):
         # print("STATE AT BEGINNING OF CALLBACK(): ", request.cookies.get(STATE)) # wrong
 
         flow.fetch_token(authorization_response=request.url)
-        response = redirect("/my_account")
+        # response = redirect("/my_account")
+
+        response = redirect(f"{FRONTEND_URL}/account")
 
         db_state = States.query.filter_by(
             state=request.args[STATE]).first()
@@ -74,9 +83,15 @@ class Callback(Resource):
         return response
 
 
-class Logout(Resource):
-    def get(self):
-        remove_current_state()
-        response = redirect("/")
-        response.delete_cookie(STATE)
-        return response
+# class Logout(Resource):
+#     def get(self):
+#         # remove_current_state()
+#         # response = redirect("/")
+#         # response.delete_cookie(STATE)
+#         # return response
+
+#         return Response(
+#             response=json.dumps({"message": "Logged out"}),
+#             status=202,
+#             mimetype='application/json'
+#         )

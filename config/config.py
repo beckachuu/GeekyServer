@@ -21,6 +21,8 @@ USE_CREDENTIALS = True
 SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
 
 
+FRONTEND_URL = "http://localhost:3000"
+
 SECRET_KEY = 'justasimplesecretkeyhere'
 GOOGLE_CLIENT_ID = "482973633382-tbr5icbjn9f895loe0a0iv7sgvsm0948.apps.googleusercontent.com"
 CORS_HEADERS = 'Content-Type'

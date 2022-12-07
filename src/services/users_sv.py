@@ -2,12 +2,12 @@ import sqlalchemy
 
 from init_app import db
 from src.const import *
-from src.controller.auth import (get_current_user, login_required,
-                                 remove_current_state)
+from src.controller.auth import get_current_user
 from src.models.bookmarks_md import Bookmark
 from src.models.collections_md import Collections
 from src.models.noti_md import Notifications
 from src.models.ratings_md import Ratings
+from src.models.states_md import States
 from src.models.subscription_md import Subscription
 
 
@@ -69,8 +69,10 @@ def remove_own_account():
         for obj in to_delete:
             db.session.delete(obj)
 
+        state = States.query.filter_by(state=user.login_state).first()
+
         db.session.delete(user)
-        remove_current_state()
+        db.session.delete(state)
 
         db.session.commit()
         return OK_STATUS
