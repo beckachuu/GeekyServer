@@ -25,7 +25,7 @@ def edit_own_account(new_info):
     profile_pic = new_info[PROFILE_PIC]
     theme_preference = new_info['theme_preference']
     receive_email = new_info['recieve_email']
-
+    bio = new_info['bio']
     user = get_current_user()
     updated = False
 
@@ -45,6 +45,9 @@ def edit_own_account(new_info):
         updated = True
 
     if user.update_receive_email(receive_email):
+        updated = True
+
+    if user.update_bio(bio):
         updated = True
 
     if updated:

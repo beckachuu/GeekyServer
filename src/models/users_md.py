@@ -1,7 +1,7 @@
 from init_app import db
 from src.const import *
 from src.models.collections_md import Collections
-from src.utils import (is_url_image, is_valid_datetime, is_valid_name,
+from src.utils import (is_url_image, is_valid_datetime, is_valid_name, is_valid_text,
                        is_valid_username, validate_phone)
 from src.utils import get_username_from_email
 
@@ -17,6 +17,7 @@ class Users(db.Model):
     user_role = db.Column(db.Integer)
     restrict_due = db.Column(db.DateTime)
     recieve_email = db.Column(db.Integer)
+    bio = db.Column(db.String)
 
     def __init__(self, email, profile_pic):
         self.username = get_username_from_email(email)
@@ -39,6 +40,7 @@ class Users(db.Model):
             'name': self.name,
             'phone': self.phone,
             'profile_pic': self.profile_pic,
+            'bio': self.bio,
             'theme_preference': self.theme_preference,
             'collections': {"collection_list": collection_list,
                             "collection_count": len(collection_list)},
@@ -84,5 +86,11 @@ class Users(db.Model):
     def update_receive_email(self, receive_email):
         if self.recieve_email != receive_email and (receive_email == 0 or receive_email == 1):
             self.recieve_email = receive_email
+            return True
+        return False
+
+    def update_bio(self, new_bio):
+        if self.bio != new_bio and is_valid_text(new_bio):
+            self.bio = new_bio
             return True
         return False

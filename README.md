@@ -25,13 +25,14 @@ python Geeky.py
 
 ### Account APIs
 - GET /my_account
-- POST /my_account
+- POST /my_account: edit user info
 > JSON structure:
   { "username": string,
     "name": string,
     "phone": string,
     "profile_pic": string,
-    "theme": int }
+    "theme": int,
+    "bio": string }
 
 - DELETE /my_account
 - GET /my_notification

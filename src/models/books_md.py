@@ -112,13 +112,13 @@ class Books(db.Model):
         return False
 
     def update_content(self, new_content):
-        if self.content != new_content:
+        if self.content != new_content and is_valid_text(new_content):
             self.content = new_content
             return True
         return False
 
     def update_descript(self, new_descript):
-        if self.descript != new_descript:
+        if self.descript != new_descript and is_valid_text(new_descript):
             self.descript = new_descript
             return True
         return False
