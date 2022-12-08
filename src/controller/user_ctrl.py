@@ -93,6 +93,12 @@ class MyRatings(Resource):
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
+    @admin_only()
+    def delete(self):
+        book_id = request.args.get(BOOK_ID)
+        status = remove_rating(book_id)
+        return status
+
 
 class Subscribe(Resource):
     @login_required()

@@ -48,6 +48,7 @@ python Geeky.py
     "content": string }
 - PUT /my_ratings : edit rating
 > JSON structure: same as above
+- DELETE /my_ratings?book_id=<int>: remove user rating from a book (admin only)
 
 ---
 

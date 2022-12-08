@@ -84,5 +84,19 @@ def edit_my_rating(json):
 
 
 @ admin_only()
-def remove_rating():
-    pass
+def remove_rating(book_id):
+    user = get_current_user()
+
+    try:
+        rating = Ratings.query.filter_by(
+            username=user.username, book_id=book_id).first()
+
+        if not rating:
+            return NOT_FOUND
+
+        db.session.delete(rating)
+        db.session.commit()
+
+        return OK_STATUS
+    except:
+        return BAD_REQUEST

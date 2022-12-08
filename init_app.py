@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 app.config.from_pyfile('config/config.py')
 app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 db = SQLAlchemy()
 db.init_app(app)
