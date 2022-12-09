@@ -10,15 +10,15 @@ flow = Flow.from_client_secrets_file(  # Flow is OAuth 2.0 a class that stores a
     # here we are specifing what do we get after the authorization
     scopes=["https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://w22g7.int3306.freeddns.org/callback"
+    redirect_uri="http://127.0.0.1:5000/callback"
 )
 
 USE_CREDENTIALS = True
 
-# SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/w22g7_geek'
+SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/w22g7_geek'
 
 # For phpmyadmin:
-SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
+# SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
 
 
 FRONTEND_URL = "http://localhost:3000"

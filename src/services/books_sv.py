@@ -137,15 +137,3 @@ def remove_book(book_id):
         return OK_STATUS
     except:
         return SERVER_ERROR
-
-
-def add_bookmark():
-    pass
-
-
-def edit_bookmark():
-    pass
-
-
-def delete_bookmark():
-    pass

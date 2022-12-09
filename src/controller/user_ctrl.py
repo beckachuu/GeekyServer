@@ -176,16 +176,35 @@ class MyCollections(Resource):
 class MyBookmarks(Resource):
     @login_required()
     def get(self):
-        pass
+        book_id = request.args.get(BOOK_ID)
+        bm_name = request.args.get(BOOKMARK_NAME)
+        result, status = get_bookmark(book_id, bm_name)
+
+        if status == OK_STATUS:
+            return result, OK_STATUS
+        elif status == NOT_FOUND:
+            return {MESSAGE: "Can't find your bookmark."}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def post(self, bm_name):
-        pass
+    def post(self):
+        json = request.get_json()
+        status = add_bookmark(json)
+
+        return status
 
     @login_required()
-    def put(self, bm_name):
-        pass
+    def put(self):
+        json = request.get_json()
+        status = edit_bookmark(json)
+
+        return status
 
     @login_required()
-    def delete(self, bm_name):
-        pass
+    def delete(self):
+        book_id = request.args.get(BOOK_ID)
+        bm_name = request.args.get(BOOKMARK_NAME)
+        status = add_bookmark(book_id, bm_name)
+
+        return status

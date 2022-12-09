@@ -85,8 +85,25 @@ python Geeky.py
     "authors": int LIST (for author_id) (mandatory) }
 
 - PUT /books : change detail for a book (admin only)
-> JSON structure: same as above, plus "book_id" (POST /books)
+> JSON structure: same as above, plus "book_id" (POST /books), no field is mandatory
 - DELETE /books?book_id=<int>
+
+---
+
+#### Bookmarks APIs
+- GET /my_bookmark?book_id=<int>&bm_name=<string>
+- POST /my_bookmark
+> JSON structure:
+  { "book_id": int (mandatory),
+    "bm_name": string (mandatory),
+    "line_pos": int,
+    "content": string }
+- PUT /my_bookmark
+> JSON structure:
+  { "bm_name": string (mandatory),
+    "line_pos": int,
+    "content": string }
+- DELETE /my_bookmark?book_id=<int>&bm_name=<string>
 
 ---
 

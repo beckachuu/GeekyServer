@@ -1,4 +1,5 @@
 from init_app import db
+from src.models.books_md import Books
 from src.utils import *
 
 
@@ -9,12 +10,12 @@ class Bookmark(db.Model):
     line_position = db.Column(db.String)
     content = db.Column(db.String)
 
-    def __init__(self, username,  book_id, bm_name, line_position=None, content=None):
+    def __init__(self, username):
         self.username = username
-        self.book_id = book_id
-        self.bm_name = bm_name
-        self.line_position = line_position
-        self.content = content
+        self.book_id = None
+        self.bm_name = None
+        self.line_position = None
+        self.content = None
 
     def get_json(self):
         return {
@@ -24,6 +25,15 @@ class Bookmark(db.Model):
             'line_position': self.line_position,
             'content': self.content,
         }
+
+    def update_book_id(self, book_id):
+        try:
+            book = Books.query.filter_by(book_id=book_id)
+            if book is not None:
+                self.book_id = book_id
+            return True
+        except:
+            return False
 
     def update_bm_name(self, new_bm_name):
         if self.bm_name != new_bm_name and is_valid_name(new_bm_name):
