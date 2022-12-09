@@ -21,6 +21,7 @@ api.add_resource(Callback, '/callback')
 
 
 api.add_resource(MyAccount, '/my_account')
+api.add_resource(MyBookmarks, '/my_bookmark')
 api.add_resource(MyNoti, '/my_notification')
 api.add_resource(MyRatings, '/my_ratings')
 api.add_resource(MyCollections, '/my_collections/<string:coll_name>')

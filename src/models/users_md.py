@@ -44,6 +44,7 @@ class Users(db.Model):
             'theme_preference': self.theme_preference,
             'collections': {"collection_list": collection_list,
                             "collection_count": len(collection_list)},
+            'user_role': self.user_role,
         }
 
     def update_username(self, new_username):

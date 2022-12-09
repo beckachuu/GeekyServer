@@ -15,14 +15,16 @@ def login_required():
     def wrapper(function):
         @wraps(function)
         def real_func(*args, **kwargs):
-            cookies_state = request.get_json()[STATE]
+            state = request.args.get(STATE)
+            # state = request.cookies.get(STATE)
 
-            if not cookies_state:
-                return redirect(f"{FRONTEND_URL}/login")
+            if not state:
+                return {MESSAGE: "No state found in cookie. Login first."}, NON_AUTHORITATIVE
             else:
-                user = Users.query.filter_by(login_state=cookies_state).first()
+                user = Users.query.filter_by(login_state=state).first()
                 if not user:
-                    return redirect(f"{FRONTEND_URL}/login")
+                    return {MESSAGE: "No user with this state."}, NON_AUTHORITATIVE
+
                 if user.restrict_due is not None:
                     if user.restrict_due < datetime.today():
                         user.restrict_due = None
@@ -39,12 +41,12 @@ def admin_only():
     def wrapper(function):
         @wraps(function)
         def real_func(*args, **kwargs):
-            cookies_state = request.get_json()[STATE]
+            state = request.get_json()[STATE]
 
-            if not cookies_state:
+            if not state:
                 return redirect(f"{FRONTEND_URL}/login")
             else:
-                user = Users.query.filter_by(login_state=cookies_state).first()
+                user = Users.query.filter_by(login_state=state).first()
                 if not user:
                     return redirect(f"{FRONTEND_URL}/login")
                 if not equal(user.user_role, ADMIN):
@@ -56,16 +58,15 @@ def admin_only():
 
 
 # def remove_current_state():
-#     cookies_state = request.cookies.get(STATE)
-#     state_db = States.query.filter_by(state=cookies_state).first()
+#     state = request.cookies.get(STATE)
+#     state_db = States.query.filter_by(state=state).first()
 #     if state_db:
 #         db.session.delete(state_db)
 #         db.session.commit()
 
 
 def get_current_user():
-    cookies_state = request.cookies.get(STATE)
-    user = Users.query.filter_by(login_state=cookies_state).first()
-    if user is None:
-        return redirect(f"{FRONTEND_URL}/login")
+    # state = request.cookies.get(STATE)
+    state = request.args.get(STATE)
+    user = Users.query.filter_by(login_state=state).first()
     return user

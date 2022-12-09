@@ -3,9 +3,10 @@ from flask_restful import Resource
 
 from src.const import *
 from src.controller.auth import login_required
+from src.services.bookmark_sv import *
+from src.services.collections_sv import *
 from src.services.ratings_sv import *
 from src.services.users_sv import *
-from src.services.collections_sv import *
 
 
 class MyAccount(Resource):
@@ -15,6 +16,8 @@ class MyAccount(Resource):
 
         if status == OK_STATUS:
             return result, OK_STATUS
+        elif status == NOT_FOUND:
+            return {MESSAGE: "No user is found"}, NOT_FOUND
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 

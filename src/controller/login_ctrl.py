@@ -4,6 +4,7 @@ import google.auth.transport.requests
 import requests
 from flask import redirect, request
 from flask.wrappers import Response
+from flask_cors import cross_origin
 from flask_restful import Resource
 from google.oauth2 import id_token
 from pip._vendor import cachecontrol
@@ -19,32 +20,33 @@ from src.utils import *
 
 
 class Login(Resource):
-    # @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True)
     def get(self):
         authorization_url, state = flow.authorization_url()
         # response = redirect(authorization_url)
 
-        # response.set_cookie(STATE, state)
         db.session.add(States(state))
         db.session.commit()
         print("STATE FROM LOGIN(): ", state)  # gud
 
-        return Response(
+        response = Response(
             response=json.dumps(
                 {'auth_url': authorization_url, 'state': state}),
             status=200,
             mimetype='application/json'
         )
-        # return response
+        # response.set_cookie(STATE, state)
+
+        # response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
 
 
 class Callback(Resource):
-    # @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True)
     def get(self):
         # print("STATE AT BEGINNING OF CALLBACK(): ", request.cookies.get(STATE)) # wrong
 
         flow.fetch_token(authorization_response=request.url)
-        # response = redirect("/my_account")
 
         response = redirect(f"{FRONTEND_URL}/account")
 
@@ -78,7 +80,7 @@ class Callback(Resource):
         user.login_state = db_state.state
         db.session.commit()
 
-        response.set_cookie(STATE, db_state.state)
+        # response.set_cookie(STATE, db_state.state)
         return response
 
 
