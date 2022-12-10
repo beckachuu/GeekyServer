@@ -29,15 +29,15 @@ def send_email(subject, recipients, body):
 
 def notify_book_update(book_id):
     book = Books.query.filter_by(book_id=book_id).first()
-    usernames = Collections.query(
-        Collections.username.distinct()).filter_by(book_id=book_id)
+    usernames = db.session.query(
+        Collections.username.distinct()).filter_by(book_id=book_id).all()
 
     email_recipients = []
     for username in usernames:
-        new_noti = Notifications(username, BOOK_UPDATE_NOTI.format(
+        new_noti = Notifications(username[0], BOOK_UPDATE_NOTI.format(
             book.title), datetime.today(), BOOK_DETAIL_PATH.format(book_id))
         db.session.add(new_noti)
-        user = Users.query.filter_by(username=username).first()
+        user = Users.query.filter_by(username=username[0]).first()
         if user.recieve_email == YES_RECEIVE_EMAIL:
             email_recipients.append(user.email)
 
@@ -51,14 +51,14 @@ def notify_authors_new_book(author_ids, book_id):
     for author_id in author_ids:
         author = Authors.query.filter_by(author_id=author_id).first()
         usernames = Subscription.query(
-            Subscription.username.distinct()).filter_by(author_id=author_id)
+            Subscription.username.distinct()).filter_by(author_id=author_id).all()
 
         for username in usernames:
-            new_noti = Notifications(username, AUTHOR_NEW_BOOK_NOTI.format(
+            new_noti = Notifications(username[0], AUTHOR_NEW_BOOK_NOTI.format(
                 author.author_name), datetime.today(), BOOK_DETAIL_PATH.format(book_id))
             db.session.add(new_noti)
 
-            user = Users.query.filter_by(username=username).first()
+            user = Users.query.filter_by(username=username[0]).first()
             if user.recieve_email == YES_RECEIVE_EMAIL:
                 email_recipients.append(user.email)
 

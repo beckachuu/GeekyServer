@@ -31,7 +31,8 @@ python Geeky.py
     "name": string,
     "phone": string,
     "profile_pic": string,
-    "theme": int,
+    "theme": int (0 or 1),
+    "receive_email": int (0 or 1)
     "bio": string }
 
 - DELETE /my_account

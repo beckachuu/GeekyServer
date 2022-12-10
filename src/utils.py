@@ -45,7 +45,7 @@ def validate_phone(phone):
 
     result = re.sub('\D', '', phone)
 
-    if len(str) == PHONE_LENGTH:
+    if len(phone) == PHONE_LENGTH:
         return result
 
     return None

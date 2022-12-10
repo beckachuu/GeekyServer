@@ -23,8 +23,8 @@ def edit_own_account(new_info):
     name = new_info[NAME]
     phone = new_info[PHONE]
     profile_pic = new_info[PROFILE_PIC]
-    theme_preference = new_info['theme_preference']
-    receive_email = new_info['recieve_email']
+    theme_preference = new_info['theme']
+    receive_email = new_info['receive_email']
     bio = new_info['bio']
     user = get_current_user()
     updated = False

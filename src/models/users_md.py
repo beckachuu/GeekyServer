@@ -28,11 +28,14 @@ class Users(db.Model):
         self.recieve_email = 1
 
     def get_json(self):
-        collections_query = Collections.query.filter_by(username=self.username)
+        collection_names = db.session.query(Collections.coll_name.distinct()).filter_by(
+            username=self.username).all()
         collection_list = []
-        for collection in collections_query:
+        for coll_name in collection_names:
+            collection = Collections.query.filter_by(
+                username=self.username, coll_name=coll_name[0]).first()
             collection_list.append(collection.get_json(
-                self.username, collection.coll_name))
+                self.username, coll_name[0]))
 
         return {
             'username': self.username,
@@ -42,8 +45,7 @@ class Users(db.Model):
             'profile_pic': self.profile_pic,
             'bio': self.bio,
             'theme_preference': self.theme_preference,
-            'collections': {"collection_list": collection_list,
-                            "collection_count": len(collection_list)},
+            'collections': collection_list,
             'user_role': self.user_role,
         }
 

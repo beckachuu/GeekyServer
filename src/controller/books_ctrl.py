@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 
 from src.const import *
-from src.controller.auth import get_current_user
+from src.controller.auth import admin_only, get_current_user, login_required
 from src.services.books_sv import *
 from src.services.collections_sv import add_book_to_collection
 

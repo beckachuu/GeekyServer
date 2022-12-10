@@ -1,6 +1,5 @@
 from init_app import db
 from src.const import *
-from src.controller.auth import admin_only, login_required
 from src.models.authors_books_md import BooksAuthors
 from src.models.authors_md import Authors
 from src.models.books_md import Books
@@ -10,7 +9,7 @@ from src.services.ratings_sv import get_ratings_by_stars
 from src.utils import is_similar
 
 
-def get_general_recommendation(limit=MAX_RESULT_COUNT):
+def get_general_recommendation(offset, limit):
     # TODO
     all_books = Books.query.all()
     result = []
@@ -21,12 +20,12 @@ def get_general_recommendation(limit=MAX_RESULT_COUNT):
     return result
 
 
-def get_recent_updated(limit=MAX_RESULT_COUNT):
+def get_recent_updated(offset, limit):
     # TODO
     pass
 
 
-def get_personal_recommendation(username, limit=MAX_RESULT_COUNT):
+def get_personal_recommendation(username, offset, limit):
     # by user ratings, subscription, bookmarks, collections
     # TODO
     return None

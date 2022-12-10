@@ -61,6 +61,5 @@ IMAGE_FORMATS = ("image/png", "image/jpeg", "image/jpg")
 
 # constraints
 MIN_LEV_DIFF_PERCENT = 0.5
-MAX_RESULT_COUNT = 20
 MAX_ID = 2147483647
 MAX_TEXT_LENGTH = 65535

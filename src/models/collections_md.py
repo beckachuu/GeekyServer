@@ -1,5 +1,6 @@
 from init_app import db
 from src.utils import *
+from src.models.books_md import Books
 
 
 class Collections(db.Model):
@@ -19,14 +20,15 @@ class Collections(db.Model):
         '''
         collections_query = Collections.query.filter_by(
             username=username, coll_name=coll_name)
-        book_ids = []
+        books = []
         for collection in collections_query:
-            book_ids.append(collection.book_id)
+            book = Books.query.filter_by(book_id=collection.book_id).first()
+            books.append(book.get_summary_json())
 
         return {
             'username': username,
             'coll_name': coll_name,
-            'book_ids': book_ids,
+            'books': books,
         }
 
     @staticmethod
