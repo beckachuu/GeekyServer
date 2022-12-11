@@ -5,9 +5,13 @@ from flask_restful import Api
 from init_app import app
 from src.controller.admin_ctrl import *
 from src.controller.authors_ctrl import *
+from src.controller.bookmark_ctrl import *
 from src.controller.books_ctrl import *
+from src.controller.collection_ctrl import *
 from src.controller.login_ctrl import *
+from src.controller.rating_ctrl import *
 from src.controller.user_ctrl import *
+from src.controller.subscribe_ctrl import *
 
 # this is to set our environment to https because OAuth 2.0 only supports https environments
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"

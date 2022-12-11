@@ -96,6 +96,18 @@ def subscribe_to_author(author_id):
     return BAD_REQUEST
 
 
+def unsubscribe_author(author_id):
+    user = get_current_user()
+    sub = Subscription.query.filter_by(
+        username=user.username, author_id=author_id)
+    try:
+        db.session.delete(sub)
+        db.session.commit()
+        return OK_STATUS
+    except:
+        return BAD_REQUEST
+
+
 def get_my_noti():
     user = get_current_user()
     all_noti = Notifications.query.filter_by(username=user.username)
@@ -105,7 +117,3 @@ def get_my_noti():
     if len(result) == 0:
         return None, NO_CONTENT
     return result, OK_STATUS
-
-# @login_required()
-# def change_noti_pref(noti_pref):
-#     pass

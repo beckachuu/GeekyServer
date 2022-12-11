@@ -52,11 +52,13 @@ def validate_phone(phone):
 
 
 def is_url_image(image_url):
-
-    r = requests.head(image_url)
-    if r.headers[CONTENT_TYPE] in IMAGE_FORMATS:
-        return True
-    return False
+    try:
+        r = requests.head(image_url)
+        if r.headers[CONTENT_TYPE] in IMAGE_FORMATS:
+            return True
+        return False
+    except:
+        return False
 
 
 def is_valid_id(id_num):

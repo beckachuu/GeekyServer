@@ -120,3 +120,4 @@ python Geeky.py
     "profile_pic": string,
     "quote": string }
 - POST /subscribe?author_id=<int>
+- DELETE /subscribe?author_id=<int> : unsubscribe

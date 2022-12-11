@@ -20,7 +20,7 @@ def get_general_recommendation(offset, limit):
     return result
 
 
-def get_recent_updated(offset, limit):
+def get_recently_added(offset, limit):
     # TODO
     pass
 
