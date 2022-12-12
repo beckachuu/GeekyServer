@@ -1,21 +1,31 @@
+import json
+
 from flask import request
 from flask_restful import Resource
 
+from config.config import RECOMMEND_PATH
 from src.const import *
-from src.controller.auth import admin_only, get_current_user, login_required
+from src.controller.auth import admin_only, login_required
 from src.services.books_sv import *
 from src.services.collections_sv import add_book_to_collection
 
 
 class MainPage(Resource):
     def get(self):
-        user = get_current_user()
-        result = get_general_recommendation()
-        if user and result:
-            result2 = get_personal_recommendation(user.username)
-            if result2:
-                result.append(result2)
-        return result, OK_STATUS
+        popular_status = update_popular_books()
+        new_book_status = update_new_books()
+        personal_list, personal_status = update_personal_recommendation()
+        if popular_status != OK_STATUS or new_book_status != OK_STATUS:
+            return {MESSAGE: "Our server got an error..."}, SERVER_ERROR
+        if personal_status == OK_STATUS:
+            pass
+
+        try:
+            with open(RECOMMEND_PATH, 'r') as file:
+                recommend = json.load(file)
+            return recommend, OK_STATUS
+        except:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
 class BooksSearch(Resource):

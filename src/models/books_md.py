@@ -16,17 +16,19 @@ class Books(db.Model):
     descript = db.Column(db.String)
     republish_count = db.Column(db.Integer)
     current_rating = db.Column(db.Float)
+    rating_count = db.Column(db.Integer)
 
     def __init__(self):
-        self.title = None
-        self.translator = None
-        self.cover = None
-        self.page_count = None
-        self.public_year = None
-        self.content = None
-        self.descript = None
-        self.republish_count = None
-        self.current_rating = None
+        pass
+        # self.title = None
+        # self.translator = None
+        # self.cover = None
+        # self.page_count = None
+        # self.public_year = None
+        # self.content = None
+        # self.descript = None
+        # self.republish_count = None
+        # self.current_rating = None
 
     def get_authors_list(self):
         authors = []
@@ -78,7 +80,6 @@ class Books(db.Model):
             'descript': self.descript,
             'content': self.content,
             'cover': self.cover
-
         }
 
     def update_title(self, new_title):

@@ -9,13 +9,16 @@ from src.models.noti_md import Notifications
 from src.models.ratings_md import Ratings
 from src.models.states_md import States
 from src.models.subscription_md import Subscription
+from src.services.collections_sv import get_own_collections
 
 
 def get_own_account():
     user = get_current_user()
     if user is None:
         return None, NOT_FOUND
-    return user.get_json(), OK_STATUS
+    result = user.get_json()
+    result.update({"collections": get_own_collections()})
+    return result, OK_STATUS
 
 
 def edit_own_account(new_info):

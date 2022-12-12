@@ -10,7 +10,7 @@ flow = Flow.from_client_secrets_file(  # Flow is OAuth 2.0 a class that stores a
     # here we are specifing what do we get after the authorization
     scopes=["https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://127.0.0.1:5000/callback"
+    redirect_uri="http://w22g7.int3306.freeddns.org/callback"
 )
 
 USE_CREDENTIALS = True
@@ -32,3 +32,5 @@ MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_USERNAME = 'lam20020260@gmail.com'
 MAIL_PASSWORD = 'lam2452002'
+
+RECOMMEND_PATH = 'src/data/recommend.json'

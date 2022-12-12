@@ -6,6 +6,19 @@ from src.models.collections_md import Collections
 from src.utils import is_valid_name
 
 
+def get_own_collections():
+    user = get_current_user()
+    collection_names = db.session.query(Collections.coll_name.distinct()).filter_by(
+        username=user.username).all()
+    collection_list = []
+    for coll_name in collection_names:
+        collection = Collections.query.filter_by(
+            username=user.username, coll_name=coll_name[0]).first()
+        collection_list.append(collection.get_json(
+            user.username, coll_name[0]))
+    return collection_list
+
+
 def create_collection(coll_name):
     user = get_current_user()
     new_coll = Collections(user.username)

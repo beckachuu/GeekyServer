@@ -1,34 +1,139 @@
+import json
+from datetime import datetime
+from operator import itemgetter
+
+from config.config import RECOMMEND_PATH
 from init_app import db
 from src.const import *
+from src.controller.auth import get_current_user
 from src.models.authors_books_md import BooksAuthors
 from src.models.authors_md import Authors
 from src.models.books_md import Books
+from src.models.collections_md import Collections
 from src.models.genres_md import Genres
-from src.services.noti_sv import *
-from src.services.ratings_sv import get_ratings_by_stars
+from src.services.noti_sv import notify_authors_new_book, notify_book_update
+from src.services.ratings_sv import get_own_ratings, get_ratings_by_stars
 from src.utils import is_similar
 
+MAX_RECOMMEND = 20
+UPDATE_INTERVAL = 60  # (secs)
+LAST_UPDATED = "last_updated"
 
-def get_general_recommendation(offset, limit):
-    # TODO
-    all_books = Books.query.all()
-    result = []
-    for book in all_books:
-        result.append(book.get_summary_json())
-    if len(result) == 0:
+
+def need_to_update(list_type):
+    try:
+        with open(RECOMMEND_PATH, 'r') as file:
+            recommend = json.load(file)
+        rec_list = recommend[list_type]
+        duration = datetime.now() - \
+            datetime.strptime(rec_list[LAST_UPDATED], DATETIME_FORMAT)
+        if duration.total_seconds() > UPDATE_INTERVAL:
+            rec_list[LAST_UPDATED] = datetime.today().strftime(DATETIME_FORMAT)
+            return recommend
         return None
-    return result
+    except:
+        return SERVER_ERROR
 
 
-def get_recently_added(offset, limit):
-    # TODO
-    pass
+def update_popular_books():
+    '''
+    Update "popular" books based on:
+    - id (newer -> higher id)
+    - rating (at least 3.5), rating count
+    - count in collection
+    - popular author? (considering...)
+    '''
+
+    rec_json = need_to_update("popular")
+    if rec_json == SERVER_ERROR:
+        return SERVER_ERROR
+    elif rec_json:
+        popular_rec_json = rec_json["popular"]
+
+        # calculate book "score"
+        # append to list -> sort by score
+        # take the top 20 (or something idk) => result
+
+        all_books = Books.query.all()
+        books = []
+        for index, book in enumerate(all_books):
+            appears_in_colls = db.session.query(
+                Collections.username.distinct()).filter_by(book_id=book.book_id).count()
+
+            score = index + book.current_rating + book.rating_count + appears_in_colls
+            books.append((book.get_summary_json(), score))
+
+        books.sort(key=itemgetter(1), reverse=True)
+
+        popular_rec_json["books"] = books[:, 0][:MAX_RECOMMEND]
+        with open(RECOMMEND_PATH, 'w') as file:
+            json.dump(rec_json, file, indent=4)
+
+    return OK_STATUS
 
 
-def get_personal_recommendation(username, offset, limit):
-    # by user ratings, subscription, bookmarks, collections
-    # TODO
-    return None
+def update_new_books():
+    '''
+    Update "new" books based on:
+    - id (newer -> higher id)
+    - rating (at least 3.5)
+    '''
+
+    rec_json = need_to_update("new")
+    if rec_json == SERVER_ERROR:
+        return SERVER_ERROR
+    elif rec_json:
+        popular_rec_json = rec_json["new"]
+
+        all_books = Books.query.all()
+        books = []
+        for index, book in enumerate(all_books):
+            score = index*1.5 + book.current_rating + book.rating_count
+            books.append((book.get_summary_json(), score))
+
+        books.sort(key=itemgetter(1), reverse=True)
+
+        popular_rec_json["books"] = books[:, 0][:MAX_RECOMMEND]
+        with open(RECOMMEND_PATH, 'w') as file:
+            json.dump(rec_json, file, indent=4)
+
+    return OK_STATUS
+
+
+def update_personal_recommendation():
+    '''
+    Update personal recommendation based on:
+    - id (newer -> higher id)
+    - user ratings + collections -> favourite genre
+    - subscribed authors
+    - minus point if user rated or had this book in collection
+    '''
+
+    user = get_current_user()
+    if not user:
+        return NO_CONTENT
+    rec_list = json.loads(user.rec_list)
+    duration = datetime.now() - \
+        datetime.strptime(rec_list[LAST_UPDATED], DATETIME_FORMAT)
+    if duration.total_seconds() > UPDATE_INTERVAL:
+        rec_list[LAST_UPDATED] = datetime.today().strftime(DATETIME_FORMAT)
+
+        user_ratings = get_own_ratings()
+
+        all_books = Books.query.all()
+        books = []
+        for index, book in enumerate(all_books):
+
+            score = index + book.current_rating + book.rating_count
+            books.append((book.get_summary_json(), score))
+
+        books.sort(key=itemgetter(1), reverse=True)
+
+        rec_list["books"] = books[:, 0][:MAX_RECOMMEND]
+        user.rec_list = json.dumps(rec_list)
+        db.session.commit()
+
+    return rec_list, OK_STATUS
 
 
 def search_by_name(query):
@@ -63,7 +168,7 @@ def get_detail_info(book_id):
     if book is None:
         return None, NOT_FOUND
 
-    ratings = {}
+    ratings = {"total": book.rating_count}
     for i in range(1, 6):
         ratings.update(get_ratings_by_stars(book_id, i))
 
