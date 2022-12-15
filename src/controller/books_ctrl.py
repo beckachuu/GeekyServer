@@ -12,18 +12,20 @@ from src.services.collections_sv import add_book_to_collection
 
 class MainPage(Resource):
     def get(self):
+        result = {}
         popular_status = update_popular_books()
         new_book_status = update_new_books()
         personal_list, personal_status = update_personal_recommendation()
         if popular_status != OK_STATUS or new_book_status != OK_STATUS:
             return {MESSAGE: "Our server got an error..."}, SERVER_ERROR
-        if personal_status == OK_STATUS:
-            pass
 
         try:
             with open(RECOMMEND_PATH, 'r') as file:
                 recommend = json.load(file)
-            return recommend, OK_STATUS
+            result.update(recommend)
+            if personal_status == OK_STATUS:
+                result.update({"for_this_user": personal_list})
+            return result, OK_STATUS
         except:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
