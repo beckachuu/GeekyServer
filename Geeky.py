@@ -43,7 +43,6 @@ api.add_resource(BookDetail, '/books/')
 api.add_resource(AuthorsSearch, '/authors/search')
 api.add_resource(AuthorInfo, '/authors/')
 
-
 if __name__ == '__main__':
     from src.utils import *
 
