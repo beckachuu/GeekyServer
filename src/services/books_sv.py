@@ -50,22 +50,18 @@ def update_popular_books():
     elif rec_json:
         popular_rec_json = rec_json["popular"]
 
-        # calculate book "score"
-        # append to list -> sort by score
-        # take the top 20 (or something idk) => result
-
         all_books = Books.query.all()
         books = []
         for index, book in enumerate(all_books):
             appears_in_colls = db.session.query(
                 Collections.username.distinct()).filter_by(book_id=book.book_id).count()
 
-            score = index + book.current_rating + book.rating_count + appears_in_colls
+            score = index/10 + book.current_rating + book.rating_count + appears_in_colls
             books.append((book.get_summary_json(), score))
 
         books.sort(key=itemgetter(1), reverse=True)
 
-        popular_rec_json["books"] = books[:, 0][:MAX_RECOMMEND]
+        popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
         with open(RECOMMEND_PATH, 'w') as file:
             json.dump(rec_json, file, indent=4)
 
@@ -88,12 +84,12 @@ def update_new_books():
         all_books = Books.query.all()
         books = []
         for index, book in enumerate(all_books):
-            score = index*1.5 + book.current_rating + book.rating_count
+            score = index/5 + book.current_rating + book.rating_count
             books.append((book.get_summary_json(), score))
 
         books.sort(key=itemgetter(1), reverse=True)
 
-        popular_rec_json["books"] = books[:, 0][:MAX_RECOMMEND]
+        popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
         with open(RECOMMEND_PATH, 'w') as file:
             json.dump(rec_json, file, indent=4)
 
@@ -110,8 +106,8 @@ def update_personal_recommendation():
     '''
 
     user = get_current_user()
-    if not user:
-        return NO_CONTENT
+    if user is None:
+        return None, NO_CONTENT
     rec_list = json.loads(user.rec_list)
     duration = datetime.now() - \
         datetime.strptime(rec_list[LAST_UPDATED], DATETIME_FORMAT)
@@ -129,7 +125,7 @@ def update_personal_recommendation():
 
         books.sort(key=itemgetter(1), reverse=True)
 
-        rec_list["books"] = books[:, 0][:MAX_RECOMMEND]
+        rec_list["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
         user.rec_list = json.dumps(rec_list)
         db.session.commit()
 

@@ -18,6 +18,7 @@ class Users(db.Model):
     restrict_due = db.Column(db.DateTime)
     recieve_email = db.Column(db.Integer)
     bio = db.Column(db.String)
+    rec_list = db.Column(db.String)
 
     def __init__(self, email, profile_pic):
         self.username = get_username_from_email(email)

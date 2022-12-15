@@ -68,5 +68,7 @@ def admin_only():
 def get_current_user():
     # state = request.cookies.get(STATE)
     state = request.args.get(STATE)
+    if not state:
+        return None
     user = Users.query.filter_by(login_state=state).first()
     return user

@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 
 from src.const import *
-from src.controller.auth import login_required
+from src.controller.auth import admin_only, login_required
 from src.services.ratings_sv import *
 
 
