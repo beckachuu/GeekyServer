@@ -8,7 +8,18 @@ from src.utils import equal
 
 @admin_only()
 def get_user_list():
-    pass
+    users = Users.query.all()
+
+    if users is None:
+        return None, NOT_FOUND
+
+    result = []
+    try:
+        for user in users:
+            result.append(user.get_json())
+        return result, OK_STATUS
+    except:
+        return None, SERVER_ERROR
 
 
 def change_user_role(username, new_role):

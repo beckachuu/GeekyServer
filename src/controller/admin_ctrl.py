@@ -6,6 +6,18 @@ from src.controller.auth import admin_only
 from src.services.admin_sv import *
 
 
+class UserList(Resource):
+    @admin_only()
+    def get(self):
+        result, status = get_user_list()
+        if status == NOT_FOUND:
+            return {MESSAGE: "No user is in database"}, NOT_FOUND
+        elif status == OK_STATUS:
+            return result, OK_STATUS
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+
 class ChangeRole(Resource):
     @admin_only()
     def post(self):

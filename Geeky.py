@@ -30,6 +30,8 @@ api.add_resource(MyNoti, '/my_notification')
 api.add_resource(MyRatings, '/my_ratings')
 api.add_resource(MyCollections, '/my_collections/<string:coll_name>')
 api.add_resource(Subscribe, '/subscribe')
+
+api.add_resource(ChangeRole, '/user_list')
 api.add_resource(ChangeRole, '/change_role')
 api.add_resource(BanUser, '/ban_user')
 
