@@ -41,14 +41,15 @@ def admin_only():
     def wrapper(function):
         @wraps(function)
         def real_func(*args, **kwargs):
-            state = request.get_json()[STATE]
+            # state = request.get_json()[STATE]
+            state = request.args.get(STATE)
 
             if not state:
-                return redirect(f"{FRONTEND_URL}/login")
+                return {MESSAGE: "No state found in cookie. Login first."}, NON_AUTHORITATIVE
             else:
                 user = Users.query.filter_by(login_state=state).first()
                 if not user:
-                    return redirect(f"{FRONTEND_URL}/login")
+                    return {MESSAGE: "No user with this state."}, NON_AUTHORITATIVE
                 if not equal(user.user_role, ADMIN):
                     return {MESSAGE: "You shall not pass! ('cause you're not authorized)"}, FORBIDDEN
 
