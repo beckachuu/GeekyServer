@@ -1,4 +1,5 @@
 import os
+from flask import render_template
 
 from flask_restful import Api
 
@@ -16,7 +17,7 @@ from src.controller.subscribe_ctrl import *
 # this is to set our environment to https because OAuth 2.0 only supports https environments
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-api = Api(app)
+api = Api(app)  
 
 
 api.add_resource(Login, '/login')
@@ -36,7 +37,7 @@ api.add_resource(ChangeRole, '/change_role')
 api.add_resource(BanUser, '/ban_user')
 
 
-api.add_resource(MainPage, '/')
+# api.add_resource(MainPage, '/')
 api.add_resource(BooksSearch, '/books/search')
 api.add_resource(BookDetail, '/books/')
 
@@ -45,8 +46,11 @@ api.add_resource(BookDetail, '/books/')
 api.add_resource(AuthorsSearch, '/authors/search')
 api.add_resource(AuthorInfo, '/authors/')
 
+@app.route("/")
+def hello():
+    return render_template(".\\build\index.html")
 
 if __name__ == '__main__':
     from src.utils import *
 
-    app.run(debug=True, host='', port=5000)
+    app.run(debug=True, port=3000)
