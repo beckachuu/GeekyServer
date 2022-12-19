@@ -7,7 +7,6 @@ from config.config import RECOMMEND_PATH
 from src.const import *
 from src.controller.auth import admin_only, login_required
 from src.services.books_sv import *
-from src.services.collections_sv import add_book_to_collection
 
 
 class MainPage(Resource):

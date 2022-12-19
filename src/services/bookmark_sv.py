@@ -3,7 +3,8 @@ from src.const import *
 from src.models.bookmarks_md import Bookmark
 from src.controller.auth import get_current_user
 
-BOOKMARK_NAME = 'bm_name'
+BOOKMARK = 'bookmark'
+NOTE = 'note'
 LINE_POS = 'line_pos'
 
 
@@ -17,35 +18,33 @@ def get_bookmark(book_id, bm_name):
     return None, NOT_FOUND
 
 
-def add_bookmark(json):
+def update_bookmark(json, bm_name=BOOKMARK):
     user = get_current_user()
-    bookmark = Bookmark(user.username)
 
-    if bookmark.update_book_id(json[BOOK_ID]) and bookmark.update_bm_name(json[BOOKMARK_NAME]):
-        bookmark.update_line_pos(json[LINE_POS])
-        bookmark.update_content(json[CONTENT])
+    bookmark = Bookmark.query.filter_by(
+        username=user.username, book_id=json[BOOK_ID], bm_name=bm_name)
+    if not bookmark:
+        bookmark = Bookmark(user.username)
 
-        try:
-            db.session.add(bookmark)
-            db.session.commit()
-            return OK_STATUS
-        except:
-            return CONFLICT
-    return BAD_REQUEST
+        if bookmark.update_book_id(json[BOOK_ID]):
+            bookmark.bm_name = bm_name
+            try:
+                db.session.add(bookmark)
+                db.session.commit()
+            except:
+                return CONFLICT
+        else:
+            return BAD_REQUEST
 
+    if bm_name == BOOKMARK:
+        if not bookmark.update_line_pos(json[LINE_POS]):
+            return BAD_REQUEST
+    elif bm_name == NOTE:
+        if not bookmark.update_content(json[CONTENT]):
+            return BAD_REQUEST
 
-def edit_bookmark(json):
-    user = get_current_user()
-    try:
-        bookmark = Bookmark.query.filter_by(
-            username=user.username, book_id=json[BOOK_ID], bm_name=json[BOOKMARK_NAME]).first()
-
-        if bookmark.update_bm_name(json[BOOKMARK_NAME]) or bookmark.update_line_pos(json[LINE_POS]) or bookmark.update_content(json[CONTENT]):
-            db.session.commit()
-            return OK_STATUS
-        return NO_CONTENT
-    except:
-        return BAD_REQUEST
+    db.session.commit()
+    return OK_STATUS
 
 
 def delete_bookmark(book_id, bm_name):

@@ -49,6 +49,7 @@ DESCRIPT = 'descript'
 REPUBLISH_COUNT = 'republish_count'
 GENRES = 'genres'
 AUTHORS = 'authors'
+BOOKMARK_NAME = 'bm_name'
 
 # constraints for data fields
 NAME_MAX_LENGTH = 70

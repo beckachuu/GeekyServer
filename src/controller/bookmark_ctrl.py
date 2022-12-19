@@ -16,21 +16,21 @@ class MyBookmarks(Resource):
         if status == OK_STATUS:
             return result, OK_STATUS
         elif status == NOT_FOUND:
-            return {MESSAGE: "Can't find your bookmark."}, NOT_FOUND
+            return {MESSAGE: "Can't find your bookmark or note"}, NOT_FOUND
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
     def post(self):
         json = request.get_json()
-        status = add_bookmark(json)
+        status = update_bookmark(json, BOOKMARK)
 
         return status
 
     @login_required()
     def put(self):
         json = request.get_json()
-        status = edit_bookmark(json)
+        status = update_bookmark(json, NOTE)
 
         return status
 
@@ -38,6 +38,6 @@ class MyBookmarks(Resource):
     def delete(self):
         book_id = request.args.get(BOOK_ID)
         bm_name = request.args.get(BOOKMARK_NAME)
-        status = add_bookmark(book_id, bm_name)
+        status = update_bookmark(book_id, bm_name)
 
         return status

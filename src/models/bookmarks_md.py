@@ -14,8 +14,7 @@ class Bookmark(db.Model):
         self.username = username
         self.book_id = None
         self.bm_name = None
-        self.line_position = None
-        self.content = None
+        self.line_position = 0
 
     def get_json(self):
         return {
@@ -42,7 +41,7 @@ class Bookmark(db.Model):
         return False
 
     def update_line_pos(self, new_line_pos):
-        if self.line_position != new_line_pos and new_line_pos.isnumeric():
+        if self.line_position != new_line_pos and isinstance(new_line_pos, int):
             self.line_position = new_line_pos
             return True
         return False
