@@ -5,9 +5,9 @@ from src.utils import *
 
 class Bookmark(db.Model):
     username = db.Column(db.String, primary_key=True)
-    book_id = db.Column(db.String(70))
-    bm_name = db.Column(db.String)
-    line_position = db.Column(db.String)
+    book_id = db.Column(db.Integer, primary_key=True)
+    bm_name = db.Column(db.String, primary_key=True)
+    line_position = db.Column(db.Integer)
     content = db.Column(db.String)
 
     def __init__(self, username):
@@ -17,13 +17,17 @@ class Bookmark(db.Model):
         self.line_position = 0
 
     def get_json(self):
-        return {
+        result = {
             'username': self.username,
             'book_id': self.book_id,
-            'bm_name': self.bm_name,
-            'line_position': self.line_position,
-            'content': self.content,
+            'bm_name': self.bm_name
         }
+        if self.bm_name == "bookmark":
+            result.update({'line_position': self.line_position})
+        else:
+            result.update({'content': self.content})
+
+        return result
 
     def update_book_id(self, book_id):
         try:

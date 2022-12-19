@@ -8,21 +8,26 @@ NOTE = 'note'
 LINE_POS = 'line_pos'
 
 
-def get_bookmark(book_id, bm_name):
+def get_bookmark(book_id):
     user = get_current_user()
-    bookmark = Bookmark.query.filter_by(
-        username=user.username, book_id=book_id, bm_name=bm_name).first()
+    bookmarks = Bookmark.query.filter_by(
+        username=user.username, book_id=book_id)
 
-    if bookmark:
-        return bookmark.get_json(), OK_STATUS
+    result = []
+    for bookmark in bookmarks:
+        result.append(bookmark.get_json())
+
+    if len(result) > 0:
+        return result, OK_STATUS
     return None, NOT_FOUND
 
 
-def update_bookmark(json, bm_name=BOOKMARK):
+def update_bookmark(json, bm_name):
     user = get_current_user()
 
     bookmark = Bookmark.query.filter_by(
-        username=user.username, book_id=json[BOOK_ID], bm_name=bm_name)
+        username=user.username, book_id=json[BOOK_ID], bm_name=bm_name).first()
+    print(user.username, json[BOOK_ID], bm_name)
     if not bookmark:
         bookmark = Bookmark(user.username)
 

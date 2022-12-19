@@ -10,8 +10,7 @@ class MyBookmarks(Resource):
     @login_required()
     def get(self):
         book_id = request.args.get(BOOK_ID)
-        bm_name = request.args.get(BOOKMARK_NAME)
-        result, status = get_bookmark(book_id, bm_name)
+        result, status = get_bookmark(book_id)
 
         if status == OK_STATUS:
             return result, OK_STATUS
@@ -23,14 +22,8 @@ class MyBookmarks(Resource):
     @login_required()
     def post(self):
         json = request.get_json()
-        status = update_bookmark(json, BOOKMARK)
-
-        return status
-
-    @login_required()
-    def put(self):
-        json = request.get_json()
-        status = update_bookmark(json, NOTE)
+        bm_name = request.args.get(BOOKMARK_NAME)
+        status = update_bookmark(json, bm_name)
 
         return status
 

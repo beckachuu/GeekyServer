@@ -95,13 +95,12 @@ python Geeky.py
 ---
 
 #### Bookmarks and Notes APIs
-- GET /my_bookmark?book_id=<int>&bm_name=<"bookmark"/"note"> : get bookmark or note
-- POST /my_bookmark : update bookmark
-> JSON structure:
+- GET /my_bookmark?book_id=<int> : get bookmark or note
+- POST /my_bookmark
+> JSON structure (for update bookmark):
   { "book_id": int (mandatory),
     "line_pos": int }
-- PUT /my_bookmark : update note
-> JSON structure:
+> JSON structure (for update note):
   { "book_id": int (mandatory),
     "content": string }
 - DELETE /my_bookmark?book_id=<int>&bm_name=<"bookmark"/"note"> : delete bookmark or note
