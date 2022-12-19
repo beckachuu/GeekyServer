@@ -19,15 +19,28 @@ def get_own_collections():
     return collection_list
 
 
-def create_collection(coll_name):
-    user = get_current_user()
-    new_coll = Collections(user.username)
-    if is_valid_name(coll_name, COLL_NAME_MAX_LENGTH):
-        new_coll.coll_name = coll_name
-        db.session.add(new_coll)
-        db.session.commit()
-        return new_coll.get_json(), OK_STATUS
-    return None, BAD_REQUEST
+def create_collection(coll_name, book_ids):
+    try:
+        user = get_current_user()
+        if not is_valid_name(coll_name):
+            return BAD_REQUEST
+
+        updated = False
+        for book_id in book_ids:
+            book = Books.query.get(book_id)
+            if book:
+                collection = Collections(user.username)
+                collection.coll_name = coll_name
+                collection.book_id = book_id
+                db.session.add(collection)
+                updated = True
+
+        if updated:
+            db.session.commit()
+            return OK_STATUS
+        return NO_CONTENT
+    except:
+        return SERVER_ERROR
 
 
 def edit_collection_name(coll_name, new_name):
@@ -67,22 +80,6 @@ def delete_collection(coll_name):
         if collections:
             for collection in collections:
                 db.session.delete(collection)
-            db.session.commit()
-            return OK_STATUS
-        return NOT_FOUND
-    except:
-        return BAD_REQUEST
-
-
-def add_book_to_collection(coll_name, book_id):
-    user = get_current_user()
-    try:
-        book = Books.query.get(book_id)
-        collections = Collections.query.filter_by(
-            username=user.username, coll_name=coll_name)
-        if book and collections:
-            for collection in collections:
-                collection.book_id = book_id
             db.session.commit()
             return OK_STATUS
         return NOT_FOUND

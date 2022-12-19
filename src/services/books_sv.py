@@ -84,7 +84,7 @@ def update_new_books():
         all_books = Books.query.all()
         books = []
         for index, book in enumerate(all_books):
-            score = index/5 + book.current_rating + book.rating_count
+            score = index/5 + book.current_rating + book.rating_count/2
             books.append((book.get_summary_json(), score))
 
         books.sort(key=itemgetter(1), reverse=True)
@@ -108,26 +108,31 @@ def update_personal_recommendation():
     user = get_current_user()
     if user is None:
         return None, NO_CONTENT
-    rec_list = json.loads(user.rec_list)
-    duration = datetime.now() - \
-        datetime.strptime(rec_list[LAST_UPDATED], DATETIME_FORMAT)
-    if duration.total_seconds() > UPDATE_INTERVAL:
-        rec_list[LAST_UPDATED] = datetime.today().strftime(DATETIME_FORMAT)
 
-        user_ratings = get_own_ratings()
+    if user.rec_list is not None:
+        rec_list = json.loads(user.rec_list)
+        duration = datetime.now() - \
+            datetime.strptime(rec_list[LAST_UPDATED], DATETIME_FORMAT)
+        if duration.total_seconds() <= UPDATE_INTERVAL:
+            return None, NO_CONTENT
 
-        all_books = Books.query.all()
-        books = []
-        for index, book in enumerate(all_books):
+    user.rec_list = {}
+    user.rec_list[LAST_UPDATED] = datetime.today().strftime(DATETIME_FORMAT)
 
-            score = index + book.current_rating + book.rating_count
-            books.append((book.get_summary_json(), score))
+    user_ratings = get_own_ratings()
 
-        books.sort(key=itemgetter(1), reverse=True)
+    all_books = Books.query.all()
+    books = []
+    for index, book in enumerate(all_books):
 
-        rec_list["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
-        user.rec_list = json.dumps(rec_list)
-        db.session.commit()
+        score = index + book.current_rating + book.rating_count/2
+        books.append((book.get_summary_json(), score))
+
+    books.sort(key=itemgetter(1), reverse=True)
+
+    user.rec_list["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
+    user.rec_list = json.dumps(user.rec_list)
+    db.session.commit()
 
     return rec_list, OK_STATUS
 

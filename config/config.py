@@ -10,7 +10,8 @@ flow = Flow.from_client_secrets_file(  # Flow is OAuth 2.0 a class that stores a
     # here we are specifing what do we get after the authorization
     scopes=["https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://w22g7.int3306.freeddns.org/callback"
+    redirect_uri="http://localhost:5000/callback"
+    # redirect_uri="http://w22g7.int3306.freeddns.org/callback"
 )
 
 USE_CREDENTIALS = True

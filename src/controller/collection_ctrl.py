@@ -9,12 +9,14 @@ from src.services.collections_sv import *
 class MyCollections(Resource):
     @login_required()
     def post(self, coll_name):
-        result, status = create_collection(coll_name)
+        status = create_collection(coll_name)
 
         if status == OK_STATUS:
-            return result, OK_STATUS
+            return {MESSAGE: "Collection updated"}, OK_STATUS
         elif status == BAD_REQUEST:
-            return {MESSAGE: "Your collection name is invalid"}, BAD_REQUEST
+            return {MESSAGE: "Invalid collname or book_ids"}, BAD_REQUEST
+        elif status == NO_CONTENT:
+            return {MESSAGE: "Nothing updated (invalid book_ids"}, OK_STATUS
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
@@ -24,7 +26,7 @@ class MyCollections(Resource):
         status = edit_collection_name(coll_name, new_name)
 
         if status == OK_STATUS:
-            return {MESSAGE: "{old_name}'s name is noew {new_name}".format(coll_name, new_name)}, OK_STATUS
+            return {MESSAGE: "{old_name}'s name is now {new_name}".format(coll_name, new_name)}, OK_STATUS
         elif status == NOT_FOUND:
             return {MESSAGE: "Can't find your collection"}, NOT_FOUND
         elif status == BAD_REQUEST:

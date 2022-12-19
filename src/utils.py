@@ -5,8 +5,6 @@ import time
 from datetime import datetime
 from functools import lru_cache
 
-import requests
-
 from src.const import *
 
 regex_name = '^[A-Za-z_][A-Za-z0-9_]*'
@@ -52,13 +50,14 @@ def validate_phone(phone):
 
 
 def is_url_image(image_url):
-    try:
-        r = requests.head(image_url)
-        if r.headers[CONTENT_TYPE] in IMAGE_FORMATS:
-            return True
-        return False
-    except:
-        return False
+    return True
+    # try:
+    #     r = requests.head(image_url)
+    #     if r.headers[CONTENT_TYPE] in IMAGE_FORMATS:
+    #         return True
+    #     return False
+    # except:
+    #     return False
 
 
 def is_valid_id(id_num):

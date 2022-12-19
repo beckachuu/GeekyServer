@@ -50,7 +50,7 @@ def notify_authors_new_book(author_ids, book_id):
     email_recipients = []
     for author_id in author_ids:
         author = Authors.query.filter_by(author_id=author_id).first()
-        usernames = Subscription.query(
+        usernames = db.session.query(
             Subscription.username.distinct()).filter_by(author_id=author_id).all()
 
         for username in usernames:

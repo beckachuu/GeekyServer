@@ -58,21 +58,6 @@ class BookDetail(Resource):
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
-    @login_required()
-    def patch(self):
-        coll_name = request.args.get("coll_name")
-        book_id = request.args.get(BOOK_ID)
-
-        status = add_book_to_collection(coll_name, book_id)
-        if status == OK_STATUS:
-            return {MESSAGE: "Yay, book is added to your collection!"}, OK_STATUS
-        elif status == NOT_FOUND:
-            return {MESSAGE: "No book or collection found"}, NOT_FOUND
-        elif status == BAD_REQUEST:
-            return {MESSAGE: "Please provide valid info for the request"}, BAD_REQUEST
-        else:
-            return NO_IDEA_WHAT_ERROR_THIS_IS
-
     @admin_only()
     def post(self):
         book_info = request.get_json()

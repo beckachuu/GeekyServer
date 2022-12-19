@@ -19,9 +19,8 @@ class Books(db.Model):
     rating_count = db.Column(db.Integer)
 
     def __init__(self):
-        pass
-        # self.title = None
-        # self.translator = None
+        self.current_rating = 0
+        self.rating_count = 0
         # self.cover = None
         # self.page_count = None
         # self.public_year = None
