@@ -54,10 +54,9 @@ python Geeky.py
 ---
 
 ### Collections APIs (NOT TESTED lol sorry my back hurts so bad at this point...)
-- POST /my_collections
+- POST /my_collections/<string:collname>
 > JSON structure:
-  { "collname": string (mandatory),
-    "books": int[] (mandatory) }
+  { "books": int[] (mandatory) }
 - PATCH /my_collections/<string:collname>?new_name=<string> : rename collection
 - PUT /my_collections/<string:collname>?book_id=<string> : remove book from collection
 - DELETE /my_collections/<string:collname>
@@ -96,7 +95,7 @@ python Geeky.py
 
 #### Bookmarks and Notes APIs
 - GET /my_bookmark?book_id=<int> : get bookmark or note
-- POST /my_bookmark
+- POST /my_bookmark?bm_name={"bookmark"/"note"}&state
 > JSON structure (for update bookmark):
   { "book_id": int (mandatory),
     "line_pos": int }

@@ -9,7 +9,8 @@ from src.services.collections_sv import *
 class MyCollections(Resource):
     @login_required()
     def post(self, coll_name):
-        status = create_collection(coll_name)
+        json = request.get_json()
+        status = create_collection(coll_name, json["books"])
 
         if status == OK_STATUS:
             return {MESSAGE: "Collection updated"}, OK_STATUS

@@ -19,7 +19,7 @@ def login_required():
             # state = request.cookies.get(STATE)
 
             if not state:
-                return {MESSAGE: "No state found in cookie. Login first."}, NON_AUTHORITATIVE
+                return {MESSAGE: "No state found. Login first."}, NON_AUTHORITATIVE
             else:
                 user = Users.query.filter_by(login_state=state).first()
                 if not user:
