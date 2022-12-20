@@ -11,6 +11,7 @@ from src.models.authors_md import Authors
 from src.models.books_md import Books
 from src.models.collections_md import Collections
 from src.models.genres_md import Genres
+from src.services.image_service.similar_image import get_most_similar
 from src.services.noti_sv import notify_authors_new_book, notify_book_update
 from src.services.ratings_sv import get_own_ratings, get_ratings_by_stars
 from src.utils import is_similar
@@ -161,6 +162,18 @@ def search_by_author(query):
     if len(result) == 0:
         return [], NOT_FOUND
     return result, OK_STATUS
+
+
+def search_book_by_image(query):
+    all_books = Books.query.all()
+    books = get_most_similar(all_books, query, MAX_RECOMMEND)
+    if books is None:
+        return None, NOT_FOUND
+    result = []
+    for book in books:
+        result.append(book.get_summary_json())
+    return result, OK_STATUS
+    pass
 
 
 def filter_books(genres, sort_by_year, min_rating, min_pages, max_pages):

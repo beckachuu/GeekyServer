@@ -44,11 +44,26 @@ class BooksSearch(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
 
+class BooksSearchImage(Resource):
+    def get(self):
+        query = request.args.get(QUERY)
+
+        result, status = search_book_by_image(query)
+
+        if status == OK_STATUS:
+            return result, OK_STATUS
+        elif status == NOT_FOUND:
+            return {MESSAGE: "No book found"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+
 class BooksFilter(Resource):
     def get(self):
         args = request.args
 
-        genres = args.get('genres').split(',')
+        genres = args.get('genres')
+        genres = genres if genres.split(',') else None
         sort_by_year = args.get('sort_by_year')
         min_rating = args.get('rating_from')
         min_pages = args.get('min_pages')

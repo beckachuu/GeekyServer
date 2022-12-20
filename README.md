@@ -74,6 +74,7 @@ python Geeky.py
 ### Books APIs
 - GET / : main page (not finished)
 - GET /books/search?query={string} : search books by authors or books name
+- GET /books/search_image?query={image url} : search books by image! :3
 - GET /books/filter : filter books
 > Params (no param is mandatory):
   { "genres": strings (each string separated by a comma),
