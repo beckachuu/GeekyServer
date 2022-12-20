@@ -154,7 +154,6 @@ def search_by_author(query):
 
     for books_author in books_authors:
         author = Authors.query.get(books_author.author_id)
-        print(author.author_name)
         if is_similar(author.author_name, query):
             book = Books.query.get(books_author.book_id)
             result.append(book.get_summary_json())
@@ -162,6 +161,43 @@ def search_by_author(query):
     if len(result) == 0:
         return [], NOT_FOUND
     return result, OK_STATUS
+
+
+def filter_books(genres, sort_by_year, min_rating, min_pages, max_pages):
+    if not (genres or sort_by_year or min_rating or min_pages or max_pages):
+        return None, NOT_FOUND
+
+    all_books = Books.query.all()
+    results = []
+
+    for book in all_books:
+        for genre in genres:
+            if Genres.query.filter_by(genre=genre, book_id=book.book_id).first():
+                results.append((book.get_summary_json(), book.public_year))
+
+        if min_rating and min_rating.isnumeric() and book.current_rating >= float(min_rating):
+            results.append((book.get_summary_json(), book.public_year))
+
+        min_pages = int(min_pages) if min_pages else None
+        max_pages = int(max_pages) if max_pages else None
+
+        if min_pages:
+            if book.page_count >= min_pages and (not max_pages or book.page_count <= min_pages):
+                results.append((book.get_summary_json(), book.public_year))
+        elif max_pages and book.page_count <= min_pages:
+            results.append((book.get_summary_json(), book.public_year))
+
+    if len(results) == 0:
+        return None, NOT_FOUND
+
+    if sort_by_year == ASCEND:
+        results.sort(key=itemgetter(1))
+    elif sort_by_year == DESCEND:
+        results.sort(key=itemgetter(1), reverse=True)
+
+    results = [result[0] for result in results]
+
+    return results, OK_STATUS
 
 
 def get_detail_info(book_id):

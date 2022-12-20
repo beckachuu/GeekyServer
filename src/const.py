@@ -1,3 +1,5 @@
+ASCEND = 'asc'
+DESCEND = 'des'
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # general keys

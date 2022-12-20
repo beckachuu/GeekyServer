@@ -40,7 +40,7 @@ def create_collection(coll_name, book_ids):
             return OK_STATUS
         return NO_CONTENT
     except:
-        return SERVER_ERROR
+        return CONFLICT
 
 
 def edit_collection_name(coll_name, new_name):

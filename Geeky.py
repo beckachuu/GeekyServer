@@ -21,6 +21,7 @@ api = Api(app)
 
 api.add_resource(MainPage, '/')
 api.add_resource(BooksSearch, '/books/search')
+api.add_resource(BooksFilter, '/books/filter')
 api.add_resource(BookDetail, '/books/')
 
 api.add_resource(Login, '/login')

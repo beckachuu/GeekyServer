@@ -56,7 +56,9 @@ class Books(db.Model):
             'authors': authors,
             'current_rating': self.current_rating,
             'genre': genres,
-            'cover': self.cover
+            'cover': self.cover,
+            'page_count': self.page_count,
+            'year': self.public_year
         }
 
     def get_detail_json(self):

@@ -29,6 +29,8 @@ class MyCollections(Resource):
             return {MESSAGE: "Invalid collname or book_ids"}, BAD_REQUEST
         elif status == NO_CONTENT:
             return {MESSAGE: "Nothing updated (invalid book_ids"}, OK_STATUS
+        elif status == CONFLICT:
+            return {MESSAGE: "Collection already exists"}, CONFLICT
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 

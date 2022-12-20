@@ -74,6 +74,14 @@ python Geeky.py
 ### Books APIs
 - GET / : main page (not finished)
 - GET /books/search?query={string} : search books by authors or books name
+- GET /books/filter : filter books
+> Params (no param is mandatory):
+  { "genres": strings (each string separated by a comma),
+    "sort_by_year": 'asc'/'des',
+    "min_rating": int,
+    "min_pages": int,
+    "max_pages": int }
+
 - GET /books?book_id={int} : get detail info of a book
 - POST /books : post a new book (admin only)
 > JSON structure:

@@ -5,7 +5,7 @@ from flask_restful import Resource
 
 from config.config import RECOMMEND_PATH
 from src.const import *
-from src.controller.auth import admin_only, login_required
+from src.controller.auth import admin_only
 from src.services.books_sv import *
 
 
@@ -40,6 +40,27 @@ class BooksSearch(Resource):
             return result_by_name + result_by_author, OK_STATUS
         elif status1 == NOT_FOUND and status2 == NOT_FOUND:
             return {MESSAGE: "No book found"}, NOT_FOUND
+        else:
+            return NO_IDEA_WHAT_ERROR_THIS_IS
+
+
+class BooksFilter(Resource):
+    def get(self):
+        args = request.args
+
+        genres = args.get('genres').split(',')
+        sort_by_year = args.get('sort_by_year')
+        min_rating = args.get('rating_from')
+        min_pages = args.get('min_pages')
+        max_pages = args.get('max_pages')
+
+        result, status = filter_books(
+            genres, sort_by_year, min_rating, min_pages, max_pages)
+
+        if status == OK_STATUS:
+            return result, status
+        elif status == NOT_FOUND:
+            return {MESSAGE: 'No book matches your filters'}, NOT_FOUND
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
