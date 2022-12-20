@@ -64,10 +64,10 @@ class MyCollections(Resource):
 
     @login_required()
     def delete(self, coll_name):
-        result, status = delete_collection(coll_name)
+        status = delete_collection(coll_name)
 
         if status == OK_STATUS:
-            return result, OK_STATUS
+            return {MESSAGE: "Collection deleted"}, OK_STATUS
         elif status == NOT_FOUND:
             return {MESSAGE: "Can't find your collection"}, NOT_FOUND
         elif status == BAD_REQUEST:

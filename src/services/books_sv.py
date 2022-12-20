@@ -182,7 +182,7 @@ def filter_books(genres, sort_by_year, min_rating, min_pages, max_pages):
         max_pages = int(max_pages) if max_pages else None
 
         if min_pages:
-            if book.page_count >= min_pages and (not max_pages or book.page_count <= min_pages):
+            if book.page_count >= min_pages and (not max_pages or book.page_count <= max_pages):
                 results.append((book.get_summary_json(), book.public_year))
         elif max_pages and book.page_count <= min_pages:
             results.append((book.get_summary_json(), book.public_year))
