@@ -46,11 +46,7 @@ def create_collection(coll_name, book_ids):
 def edit_collection_name(coll_name, new_name):
     user = get_current_user()
     try:
-        collections = Collections.query.filter_by(
-            username=user.username, coll_name=coll_name)
-        if collections and Collections.update_coll_name(user.username, coll_name, new_name):
-            for collection in collections:
-                collection.coll_name = coll_name
+        if Collections.update_coll_name(user.username, coll_name, new_name):
             db.session.commit()
             return OK_STATUS
         return NOT_FOUND

@@ -33,11 +33,11 @@ class Collections(db.Model):
 
     @staticmethod
     def update_coll_name(username, coll_name, new_coll_name):
-        if is_valid_name(new_coll_name, COLL_NAME_MAX_LENGTH):
-
+        if coll_name != new_coll_name and is_valid_name(new_coll_name, COLL_NAME_MAX_LENGTH):
             collections = Collections.query.filter_by(
                 username=username, coll_name=coll_name)
-            if collections.first().coll_name == new_coll_name:
+
+            if not collection:
                 return False
 
             for collection in collections:
