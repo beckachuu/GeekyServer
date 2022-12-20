@@ -53,13 +53,14 @@ python Geeky.py
 
 ---
 
-### Collections APIs (NOT TESTED lol sorry my back hurts so bad at this point...)
-- POST /my_collections?collname={string}
+### Collections APIs
+- GET /my_collections/all
+- POST /my_collections/{string:collname}
 > JSON structure:
 > { "books": int[] (mandatory) }
-- PATCH /my_collections?collname={string}?new_name={string} : rename collection
-- PUT /my_collections?collname={string}?book_id={string} : remove book from collection
-- DELETE /my_collections?collname={string}
+- PATCH /my_collections/{string:collname}?new_name={string} : rename collection
+- PUT /my_collections/{string:collname}?book_id={string} : remove book from collection
+- DELETE /my_collections/{string:collname}
 
 ---
 

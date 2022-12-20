@@ -5,12 +5,10 @@ from src.const import *
 from src.controller.auth import login_required
 from src.services.collections_sv import *
 
-COLLECTION_NAME = 'collname'
-
 
 class MyCollections(Resource):
     @login_required()
-    def get(self):
+    def get(self, coll_name):
         result, status = get_own_collections()
 
         if status == OK_STATUS:
@@ -21,8 +19,7 @@ class MyCollections(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def post(self):
-        coll_name = request.args.get(COLLECTION_NAME)
+    def post(self, coll_name):
         json = request.get_json()
         status = create_collection(coll_name, json["books"])
 
@@ -36,8 +33,7 @@ class MyCollections(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def patch(self):
-        coll_name = request.args.get(COLLECTION_NAME)
+    def patch(self, coll_name):
         new_name = request.args.get("new_name")
         status = edit_collection_name(coll_name, new_name)
 
@@ -51,8 +47,7 @@ class MyCollections(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def put(self):
-        coll_name = request.args.get(COLLECTION_NAME)
+    def put(self, coll_name):
         book_id = request.args.get(BOOK_ID)
         status = remove_book_from_collection(coll_name, book_id)
 
@@ -66,8 +61,7 @@ class MyCollections(Resource):
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
     @login_required()
-    def delete(self):
-        coll_name = request.args.get(COLLECTION_NAME)
+    def delete(self, coll_name):
         result, status = delete_collection(coll_name)
 
         if status == OK_STATUS:

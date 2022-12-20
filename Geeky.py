@@ -32,7 +32,7 @@ api.add_resource(MyAccount, '/my_account')
 api.add_resource(MyBookmarks, '/my_bookmark')
 api.add_resource(MyNoti, '/my_notification')
 api.add_resource(MyRatings, '/my_ratings')
-api.add_resource(MyCollections, '/my_collections')
+api.add_resource(MyCollections, '/my_collections/<string:coll_name>')
 api.add_resource(Subscribe, '/subscribe')
 
 api.add_resource(UserList, '/user_list')
