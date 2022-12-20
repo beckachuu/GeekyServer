@@ -63,9 +63,9 @@ class BooksFilter(Resource):
         args = request.args
 
         genres = args.get('genres')
-        genres = genres if genres.split(',') else None
+        genres = genres.split(',') if genres else []
         sort_by_year = args.get('sort_by_year')
-        min_rating = args.get('rating_from')
+        min_rating = args.get('min_rating')
         min_pages = args.get('min_pages')
         max_pages = args.get('max_pages')
 

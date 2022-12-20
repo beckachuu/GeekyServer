@@ -165,14 +165,14 @@ def search_by_author(query):
 
 
 def search_book_by_image(query):
-    all_books = Books.query.all()
-    books = get_most_similar(all_books, query, MAX_RECOMMEND)
-    if books is None:
-        return None, NOT_FOUND
-    result = []
-    for book in books:
-        result.append(book.get_summary_json())
-    return result, OK_STATUS
+    # all_books = Books.query.all()
+    # books = get_most_similar(all_books, query, MAX_RECOMMEND)
+    # if books is None:
+    #     return None, NOT_FOUND
+    # result = []
+    # for book in books:
+    #     result.append(book.get_summary_json())
+    # return result, OK_STATUS
     pass
 
 
@@ -180,25 +180,30 @@ def filter_books(genres, sort_by_year, min_rating, min_pages, max_pages):
     if not (genres or sort_by_year or min_rating or min_pages or max_pages):
         return None, NOT_FOUND
 
+    genres_len = len(genres)
     all_books = Books.query.all()
     results = []
 
     for book in all_books:
+        genre_count = genres_len
         for genre in genres:
             if Genres.query.filter_by(genre=genre, book_id=book.book_id).first():
-                results.append((book.get_summary_json(), book.public_year))
+                genre_count -= 1
+        if genres_len > 0 and genre_count != 0:
+            continue
 
-        if min_rating and min_rating.isnumeric() and book.current_rating >= float(min_rating):
-            results.append((book.get_summary_json(), book.public_year))
+        if min_rating and min_rating.isnumeric() and book.current_rating < int(min_rating):
+            continue
 
         min_pages = int(min_pages) if min_pages else None
         max_pages = int(max_pages) if max_pages else None
 
         if min_pages:
-            if book.page_count >= min_pages and (not max_pages or book.page_count <= max_pages):
-                results.append((book.get_summary_json(), book.public_year))
-        elif max_pages and book.page_count <= min_pages:
-            results.append((book.get_summary_json(), book.public_year))
+            if book.page_count < min_pages or (max_pages and book.page_count > max_pages):
+                continue
+        elif max_pages and book.page_count > max_pages:
+            continue
+        results.append((book.get_summary_json(), book.public_year))
 
     if len(results) == 0:
         return None, NOT_FOUND
