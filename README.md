@@ -49,31 +49,31 @@ python Geeky.py
     "content": string }
 - PUT /my_ratings : edit rating
 > JSON structure: same as above
-- DELETE /my_ratings?book_id=<int>: remove user rating from a book (admin only)
+- DELETE /my_ratings?book_id={int}: remove user rating from a book (admin only)
 
 ---
 
 ### Collections APIs (NOT TESTED lol sorry my back hurts so bad at this point...)
-- POST /my_collections/<string:collname>
+- POST /my_collections?collname={string}
 > JSON structure:
-  { "books": int[] (mandatory) }
-- PATCH /my_collections/<string:collname>?new_name=<string> : rename collection
-- PUT /my_collections/<string:collname>?book_id=<string> : remove book from collection
-- DELETE /my_collections/<string:collname>
+> { "books": int[] (mandatory) }
+- PATCH /my_collections?collname={string}?new_name={string} : rename collection
+- PUT /my_collections?collname={string}?book_id={string} : remove book from collection
+- DELETE /my_collections?collname={string}
 
 ---
 
 ### Admin APIs
 - GET /user_list
-- POST /change_role?username=<string>&user_role=<int> (0: normal user, 1: admin)
-- POST /ban_user?username=<string>&restrict_due=<datetime> (restrict_due format: Year-Month-Day Hour:Minute:Second)
+- POST /change_role?username={string}&user_role={int} (0: normal user, 1: admin)
+- POST /ban_user?username={string}&restrict_due={datetime} (restrict_due format: Year-Month-Day Hour:Minute:Second)
 
 ---
 
 ### Books APIs
 - GET / : main page (not finished)
-- GET /books/search?query=<string> : search books by authors or books name
-- GET /books?book_id=<int> : get detail info of a book
+- GET /books/search?query={string} : search books by authors or books name
+- GET /books?book_id={int} : get detail info of a book
 - POST /books : post a new book (admin only)
 > JSON structure:
   { "title": string (mandatory),
@@ -89,12 +89,12 @@ python Geeky.py
 
 - PUT /books : change detail for a book (admin only)
 > JSON structure: same as above, plus "book_id" (POST /books), no field is mandatory
-- DELETE /books?book_id=<int>
+- DELETE /books?book_id={int}
 
 ---
 
 #### Bookmarks and Notes APIs
-- GET /my_bookmark?book_id=<int> : get bookmark or note
+- GET /my_bookmark?book_id={int} : get bookmark or note
 - POST /my_bookmark?bm_name={"bookmark"/"note"}&state
 > JSON structure (for update bookmark):
   { "book_id": int (mandatory),
@@ -102,13 +102,13 @@ python Geeky.py
 > JSON structure (for update note):
   { "book_id": int (mandatory),
     "content": string }
-- DELETE /my_bookmark?book_id=<int>&bm_name=<"bookmark"/"note"> : delete bookmark or note
+- DELETE /my_bookmark?book_id={int}&bm_name={"bookmark"/"note"} : delete bookmark or note
 
 ---
 
 #### Authors APIs
-- GET /authors/search?query=<string>
-- GET /authors?author_id=<int>
+- GET /authors/search?query={string}
+- GET /authors?author_id={int}
 - POST /authors
 > JSON structure:
   { "author_name": string (mandatory),
@@ -117,5 +117,5 @@ python Geeky.py
     "website": string,
     "profile_pic": string,
     "quote": string }
-- POST /subscribe?author_id=<int>
-- DELETE /subscribe?author_id=<int> : unsubscribe
+- POST /subscribe?author_id={int}
+- DELETE /subscribe?author_id={int} : unsubscribe

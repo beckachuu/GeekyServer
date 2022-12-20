@@ -1,6 +1,5 @@
 import os
 from flask import render_template
-
 from flask_restful import Api
 
 from init_app import app
@@ -20,6 +19,10 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 api = Api(app)
 
 
+api.add_resource(MainPage, '/')
+api.add_resource(BooksSearch, '/books/search')
+api.add_resource(BookDetail, '/books/')
+
 api.add_resource(Login, '/login')
 api.add_resource(Callback, '/callback')
 # api.add_resource(Logout, '/logout')
@@ -29,17 +32,12 @@ api.add_resource(MyAccount, '/my_account')
 api.add_resource(MyBookmarks, '/my_bookmark')
 api.add_resource(MyNoti, '/my_notification')
 api.add_resource(MyRatings, '/my_ratings')
-api.add_resource(MyCollections, '/my_collections/<string:coll_name>')
+api.add_resource(MyCollections, '/my_collections')
 api.add_resource(Subscribe, '/subscribe')
 
 api.add_resource(UserList, '/user_list')
 api.add_resource(ChangeRole, '/change_role')
 api.add_resource(BanUser, '/ban_user')
-
-
-api.add_resource(MainPage, '/')
-api.add_resource(BooksSearch, '/books/search')
-api.add_resource(BookDetail, '/books/')
 
 
 # api.add_resource(Authors, '/authors/all')
@@ -49,10 +47,10 @@ api.add_resource(AuthorInfo, '/authors/')
 
 # @app.route("/")
 # def hello():
-#     return render_template(".\\build\index.html")
+#     return render_template('build/index.html')
 
 
 if __name__ == '__main__':
     from src.utils import *
 
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host='', port=5000)

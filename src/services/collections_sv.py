@@ -16,7 +16,7 @@ def get_own_collections():
             username=user.username, coll_name=coll_name[0]).first()
         collection_list.append(collection.get_json(
             user.username, coll_name[0]))
-    return collection_list
+    return collection_list, OK_STATUS
 
 
 def create_collection(coll_name, book_ids):
