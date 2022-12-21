@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/w22g7_geek'
 # SQLALCHEMY_DATABASE_URI = 'mysql://w22g7:qwertyuiop@10.102.18.99:3306/w22g7_geek'
 
 
-FRONTEND_URL = "http://localhost:3000"
+FRONTEND_URL = "http://w22g7.int3306.freeddns.org"
 
 SECRET_KEY = 'justasimplesecretkeyhere'
 GOOGLE_CLIENT_ID = "482973633382-tbr5icbjn9f895loe0a0iv7sgvsm0948.apps.googleusercontent.com"

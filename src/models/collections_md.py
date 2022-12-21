@@ -37,7 +37,7 @@ class Collections(db.Model):
             collections = Collections.query.filter_by(
                 username=username, coll_name=coll_name)
 
-            if not collection:
+            if not collections:
                 return False
 
             for collection in collections:

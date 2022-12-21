@@ -40,11 +40,11 @@ class MyCollections(Resource):
         status = edit_collection_name(coll_name, new_name)
 
         if status == OK_STATUS:
-            return {MESSAGE: "Editted collection name"}, OK_STATUS
+            return {MESSAGE: "Edited collection name"}, OK_STATUS
         elif status == NOT_FOUND:
-            return {MESSAGE: "Can't find your collection"}, NOT_FOUND
+            return {MESSAGE: "Can't rename collection to this"}, NOT_FOUND
         elif status == BAD_REQUEST:
-            return {MESSAGE: "Can't update collection"}, BAD_REQUEST
+            return {MESSAGE: "Can't update collection name"}, BAD_REQUEST
         else:
             return NO_IDEA_WHAT_ERROR_THIS_IS
 
