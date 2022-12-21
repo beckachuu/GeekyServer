@@ -11,7 +11,7 @@ from src.models.authors_md import Authors
 from src.models.books_md import Books
 from src.models.collections_md import Collections
 from src.models.genres_md import Genres
-from src.services.image_service.similar_image import get_most_similar
+# from src.services.image_service.similar_image import get_most_similar
 from src.services.noti_sv import notify_authors_new_book, notify_book_update
 from src.services.ratings_sv import get_own_ratings, get_ratings_by_stars
 from src.utils import is_similar
@@ -36,63 +36,95 @@ def need_to_update(list_type):
         return SERVER_ERROR
 
 
-def update_popular_books():
-    '''
-    Update "popular" books based on:
-    - id (newer -> higher id)
-    - rating (at least 3.5), rating count
-    - count in collection
-    - popular author? (considering...)
-    '''
+# def update_popular_books():
+#     '''
+#     Update "popular" books based on:
+#     - id (newer -> higher id)
+#     - rating (at least 3.5), rating count
+#     - count in collection
+#     - popular author? (considering...)
+#     '''
 
+#     rec_json = need_to_update("popular")
+#     if rec_json == SERVER_ERROR:
+#         return SERVER_ERROR
+#     elif rec_json:
+#         popular_rec_json = rec_json["popular"]
+
+#         all_books = Books.query.all()
+#         books = []
+#         for index, book in enumerate(all_books):
+#             appears_in_colls = db.session.query(
+#                 Collections.username.distinct()).filter_by(book_id=book.book_id).count()
+
+#             score = index/10 + book.current_rating + book.rating_count + appears_in_colls
+#             books.append((book.get_summary_json(), score))
+
+#         books.sort(key=itemgetter(1), reverse=True)
+
+#         popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
+#         with open(RECOMMEND_PATH, 'w') as file:
+#             json.dump(rec_json, file, indent=4)
+
+#     return OK_STATUS
+
+
+# def update_new_books():
+#     '''
+#     Update "new" books based on:
+#     - id (newer -> higher id)
+#     - rating (at least 3.5)
+#     '''
+
+#     rec_json = need_to_update("new")
+#     if rec_json == SERVER_ERROR:
+#         return SERVER_ERROR
+#     elif rec_json:
+#         popular_rec_json = rec_json["new"]
+
+#         all_books = Books.query.all()
+#         books = []
+#         for index, book in enumerate(all_books):
+#             score = index/5 + book.current_rating + book.rating_count/2
+#             books.append((book.get_summary_json(), score))
+
+#         books.sort(key=itemgetter(1), reverse=True)
+
+#         popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
+#         with open(RECOMMEND_PATH, 'w') as file:
+#             json.dump(rec_json, file, indent=4)
+
+#     return OK_STATUS
+
+def update_books():
     rec_json = need_to_update("popular")
     if rec_json == SERVER_ERROR:
         return SERVER_ERROR
     elif rec_json:
         popular_rec_json = rec_json["popular"]
+        new_rec_json = rec_json["new"]
 
         all_books = Books.query.all()
-        books = []
+        populars = []
+        news = []
         for index, book in enumerate(all_books):
             appears_in_colls = db.session.query(
                 Collections.username.distinct()).filter_by(book_id=book.book_id).count()
 
-            score = index/10 + book.current_rating + book.rating_count + appears_in_colls
-            books.append((book.get_summary_json(), score))
+            score1 = index/10 + book.current_rating + book.rating_count + appears_in_colls
+            populars.append((book.get_summary_json(), score1))
 
-        books.sort(key=itemgetter(1), reverse=True)
+            score2 = index/5 + book.current_rating + book.rating_count/2
+            news.append((book.get_summary_json(), score2))
 
-        popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
+        populars.sort(key=itemgetter(1), reverse=True)
+        news.sort(key=itemgetter(1), reverse=True)
+
+        popular_rec_json["books"] = [book[0]
+                                     for book in populars[:MAX_RECOMMEND]]
+        new_rec_json["books"] = [book[0] for book in news[:MAX_RECOMMEND]]
         with open(RECOMMEND_PATH, 'w') as file:
-            json.dump(rec_json, file, indent=4)
-
-    return OK_STATUS
-
-
-def update_new_books():
-    '''
-    Update "new" books based on:
-    - id (newer -> higher id)
-    - rating (at least 3.5)
-    '''
-
-    rec_json = need_to_update("new")
-    if rec_json == SERVER_ERROR:
-        return SERVER_ERROR
-    elif rec_json:
-        popular_rec_json = rec_json["new"]
-
-        all_books = Books.query.all()
-        books = []
-        for index, book in enumerate(all_books):
-            score = index/5 + book.current_rating + book.rating_count/2
-            books.append((book.get_summary_json(), score))
-
-        books.sort(key=itemgetter(1), reverse=True)
-
-        popular_rec_json["books"] = [book[0] for book in books[:MAX_RECOMMEND]]
-        with open(RECOMMEND_PATH, 'w') as file:
-            json.dump(rec_json, file, indent=4)
+            json.dump(news, file, indent=4)
 
     return OK_STATUS
 

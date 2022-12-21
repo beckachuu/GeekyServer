@@ -48,7 +48,7 @@ class Callback(Resource):
 
         flow.fetch_token(authorization_response=request.url)
 
-        response = redirect(f"{FRONTEND_URL}/account")
+        # response = redirect(f"{FRONTEND_URL}/account")
 
         db_state = States.query.filter_by(
             state=request.args[STATE]).first()
@@ -80,7 +80,11 @@ class Callback(Resource):
         user.login_state = db_state.state
         db.session.commit()
 
-        # response.set_cookie(STATE, db_state.state)
+        if user.user_role == 0:
+            response = redirect(f"{FRONTEND_URL}/account")
+        else:
+            response = redirect(f"{FRONTEND_URL}/dashboard")
+
         return response
 
 
