@@ -140,28 +140,36 @@ def update_personal_recommendation():
 
 def search_by_name(query):
     all_books = Books.query.all()
-    result = list()
+    results = list()
     for book in all_books:
-        if is_similar(book.title, query):
-            result.append(book.get_summary_json())
-    if len(result) == 0:
+        lev_distance, are_similar = is_similar(book.title, query)
+        if are_similar:
+            results.append((book.get_summary_json(), lev_distance))
+    if len(results) == 0:
         return [], NOT_FOUND
-    return result, OK_STATUS
+
+    results.sort(key=itemgetter(1))
+    results = [result[0] for result in results]
+    return results, OK_STATUS
 
 
 def search_by_author(query):
     books_authors = BooksAuthors.query.all()
-    result = list()
+    results = list()
 
     for books_author in books_authors:
         author = Authors.query.get(books_author.author_id)
-        if is_similar(author.author_name, query):
+        lev_distance, are_similar = is_similar(author.author_name, query)
+        if are_similar:
             book = Books.query.get(books_author.book_id)
-            result.append(book.get_summary_json())
+            results.append((book.get_summary_json(), lev_distance))
 
-    if len(result) == 0:
+    if len(results) == 0:
         return [], NOT_FOUND
-    return result, OK_STATUS
+
+    results.sort(key=itemgetter(1))
+    results = [result[0] for result in results]
+    return results, OK_STATUS
 
 
 def search_book_by_image(query):

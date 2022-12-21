@@ -7,6 +7,8 @@ from functools import lru_cache
 
 from src.const import *
 
+MAX_LEV_DIST = 10
+
 regex_name = '^[A-Za-z_][A-Za-z0-9_]*'
 regex_username = '^[A-Za-z][A-Za-z0-9]*'
 
@@ -156,7 +158,10 @@ def is_similar(s1, s2):
         longer = s2
         shorter = s1
 
-    longerLength = len(longer)
+    # longerLength = len(longer)
 
-    return ((longerLength - lev_dist(longer, shorter)) /
-            longerLength) > MIN_LEV_DIFF_PERCENT
+    # return ((longerLength - lev_dist(longer, shorter)) /
+    #         longerLength) > MIN_LEV_DIFF_PERCENT
+
+    lev_distance = lev_dist(longer, shorter)
+    return lev_distance, lev_distance < MAX_LEV_DIST

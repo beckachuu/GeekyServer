@@ -47,12 +47,21 @@ api.add_resource(AuthorsSearch, '/authors/search')
 api.add_resource(AuthorInfo, '/authors/')
 
 
+@app.route("/home")
+@app.route("/search")
+@app.route("/login")
+@app.route("/reading/<int:book_id>")
+@app.route("/Dashboard")
+@app.route("/team")
+@app.route("/form")
+@app.route("/account")
+@app.route("/author/<int:auth_id>")
 @app.route("/book/<int:book_id>")
-def show_item(book_id):
+def show_item(book_id=None):
     return render_template("index.html")
 
 
 if __name__ == '__main__':
     from src.utils import *
 
-    app.run(debug=True, host='10.244.2.232', port=5000)
+    app.run(debug=True, host='10.244.2.232', port=3000)
